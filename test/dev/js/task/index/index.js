@@ -1,5 +1,5 @@
-//$import('module/m1.js');
-//$import('module/m2.js');
+//module from 'module/m1.js';
+//module from 'module/m2.js';
 
 (function(){
     

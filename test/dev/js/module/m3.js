@@ -1,4 +1,4 @@
-//$import('module/m2.js');
+//module from 'module/m2.js';
 
 /**
  * m3 
