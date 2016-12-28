@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "outDir": "./build/",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "commonjs",
+        "target": "es5",
+        "experimentalDecorators": true,
+        "jsx": "react",
+        "lib": ["dom", "scripthost", "es5", "es2015.promise"]
+    },
+    "include": [
+        "./src/*.ts",
+        "./src/**/*.ts"
+    ]
+}
