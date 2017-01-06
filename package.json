@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/yingran/track#readme",
   "dependencies": {
-    "ammo.js": "^0.0.3",
+    "ammo.js": "git+https://github.com/kripken/ammo.js.git",
     "three": "^0.83.0"
   },
   "devDependencies": {
