@@ -1,6 +1,6 @@
 {
-  "name": "track2",
-  "version": "2.0.0",
+  "name": "track",
+  "version": "1.0.0",
   "description": "Track.",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,10 @@
     "build": "npm run clean && npm run copy && npm run webpack",
     "clean": "./node_modules/.bin/del-cli ./build/*",
     "copy": "cp ./src/index.html ./node_modules/three/build/three.js ./node_modules/three/examples/js/controls/OrbitControls.js ./node_modules/ammo.js/builds/ammo.js ./build/",
-    "webpack": "./node_modules/.bin/webpack"
+    "webpack": "./node_modules/.bin/webpack",
+    "doc": "npm run rmdoc && npm run typedoc",
+    "typedoc": "./node_modules/.bin/typedoc --options typedoc.json",
+    "rmdoc": "./node_modules/.bin/del-cli ./docs"
   },
   "repository": {
     "type": "git",
@@ -19,7 +22,7 @@
   "keywords": [
     "track"
   ],
-  "author": "",
+  "author": "yingran",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/yingran/track/issues"
@@ -30,6 +33,7 @@
     "three": "^0.83.0"
   },
   "devDependencies": {
+    "@types/ammo": "github:yingran/ammojs-tsd",
     "@types/three": "0.0.28",
     "css-loader": "^0.26.1",
     "csso-loader": "^0.2.0",
@@ -39,6 +43,7 @@
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
     "ts-loader": "^1.3.3",
+    "typedoc": "^0.5.5",
     "typescript": "^2.1.4",
     "webpack": "^1.14.0",
     "webpack-dev-server": "^1.16.2"

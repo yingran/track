@@ -24,7 +24,7 @@ module.exports = {
                 test: /\.less$/, 
                 loader: extractCSS.extract("css!csso!less") 
             }, { 
-                test: /\.tsx?$/, 
+                test: /\.ts?$/, 
                 exclude: [ 
                     path.resolve(__dirname, "node_modules")
                 ], 
