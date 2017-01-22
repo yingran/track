@@ -1,3 +1,5 @@
+import World from "./World";
+
 /**
  * RigidBody
  */
@@ -7,9 +9,19 @@ export default class RigidBody extends Ammo.btRigidBody {
     public static readonly DISABLE_DEACTIVATION: number = 4;
     public static readonly TRANSFORM_AUX: Ammo.btTransform = new Ammo.btTransform();
 
-    public readonly mesh: THREE.Mesh;
+    public mesh: THREE.Mesh;
 
-    constructor( pos: THREE.Vector3, quat: THREE.Quaternion, width: number, height: number, depth: number, mass: number = 0, friction: number = 1, material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: RigidBody.DEFAULT_COLRO } ) ) {
+    constructor( 
+        world: World, 
+        pos: THREE.Vector3, 
+        quat: THREE.Quaternion, 
+        width: number, 
+        height: number, 
+        depth: number, 
+        mass: number = 0, 
+        friction: number = 1, 
+        material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: RigidBody.DEFAULT_COLRO } ) 
+    ) {
         let geometry: Ammo.btBoxShape = new Ammo.btBoxShape( new Ammo.btVector3( width * 0.5, height * 0.5, depth * 0.5 ) );
         let mesh: THREE.Mesh;
         let transform: Ammo.btTransform;
@@ -32,7 +44,11 @@ export default class RigidBody extends Ammo.btRigidBody {
 
         if (mass > 0) {
             this.setActivationState( RigidBody.DISABLE_DEACTIVATION );
+            world.syncList.push( this.sync.bind(this) );
         }
+
+        world.scene.add( this.mesh );
+        world.physicsWorld.addRigidBody( this );
     }
 
     public sync(): void {

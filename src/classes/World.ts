@@ -17,7 +17,8 @@ export default class World {
     public time: number;
     public domElement: Element;
 
-    physicsWorld: Ammo.btDiscreteDynamicsWorld;
+    public physicsWorld: Ammo.btDiscreteDynamicsWorld;
+    public syncList: Array<any>;
 
     /**
      * @param width the width of screen
@@ -32,15 +33,7 @@ export default class World {
         this.time = 0;
         this.domElement = this.renderer.domElement;
         this.controls = new THREE.OrbitControls( this.camera );
-    }
-
-
-    /**
-     * add rigid body
-     */
-    public add( body: RigidBody ) {
-        this.scene.add( body.mesh );
-        this.physicsWorld.addRigidBody( body );
+        this.syncList = [];
     }
 
     /**
