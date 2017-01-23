@@ -7,6 +7,13 @@ import RigidBody from "./classes/RigidBody";
 import Vehicle from "./classes/Vehicle";
 
 let world: World;
+let vehicle: Vehicle;
+let keysActions: any = {
+    "KeyW": "acceleration",
+    "KeyS": "braking",
+    "KeyA": "left",
+    "KeyD": "right"
+};
 
 function animate(): void {
     requestAnimationFrame( animate );
@@ -43,22 +50,43 @@ function addRamp() {
 }
 
 function addVechicle() {
-    new Vehicle( world,  new THREE.Vector3( 0, 4, -20 ), World.ZERO_QUATERNION );
+    vehicle = new Vehicle( world,  new THREE.Vector3( 0, 4, -20 ), World.ZERO_QUATERNION );
+}
+
+function keyup( e: KeyboardEvent ) {
+    if ( keysActions[e.code] ) {
+        vehicle.actions[keysActions[e.code]] = false;
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+}
+
+function keydown( e: KeyboardEvent ) {
+    if ( keysActions[e.code] ) {
+        vehicle.actions[keysActions[e.code]] = true;
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
 }
 
 function main(): void {
     let container = document.querySelector("#container");
     world = new World( window.innerWidth, window.innerHeight );
     container.appendChild( world.domElement );
-    window.addEventListener( "resize", () => {
-        world.resize( window.innerWidth, window.innerHeight );
-    } );
 
     addGround();
     addRamp();
     addBoxes();
     addVechicle();
     animate();
+    
+    window.addEventListener( "keydown", keydown);
+    window.addEventListener( "keyup", keyup);
+    window.addEventListener( "resize", () => {
+        world.resize( window.innerWidth, window.innerHeight );
+    } );
 }
 
 main();

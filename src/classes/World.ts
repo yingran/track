@@ -6,7 +6,7 @@ import RigidBody from "./RigidBody";
 export default class World {
 
     public static ZERO_QUATERNION: THREE.Quaternion = new THREE.Quaternion( 0, 0, 0, 1 );
-    public static DEFAULT_COLRO: number = 0x999999;
+    public static DEFAULT_COLOR: number = 0x999999;
 
     public scene: THREE.Scene;
     public camera: THREE.PerspectiveCamera;

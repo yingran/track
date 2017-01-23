@@ -1,12 +1,7 @@
 import RigidBody from "./RigidBody";
 import World from "./World";
 
-interface VehicleActions {
-    acceleration: boolean,
-    braking: boolean,
-    right: boolean,
-    left: boolean
-}
+let DEFAULT_COLOR = 0x990000;
 
 /**
  * Vehicle
@@ -16,7 +11,7 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
     protected readonly world: World;
     protected readonly tuning: Ammo.btVehicleTuning;
     protected classisBody: RigidBody;
-    public actions: VehicleActions;
+    public actions: any;
     
     // Vehicle contants
     protected engineForce: number;
@@ -75,7 +70,7 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
             right: false
         };
 
-        world.syncList.push( this.sync.bind(this) );
+        world.syncList.push( this._sync.bind(this) );
     }
 
     private _initConstants(): void {
@@ -125,7 +120,7 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
         let height: number = 0.6;
         let depth: number = 4;
         let mass: number = 800;
-        let body = new RigidBody( world, pos, quat, width, height, depth, mass );
+        let body = new RigidBody( world, pos, quat, width, height, depth, mass, 1, new THREE.MeshPhongMaterial( { color: DEFAULT_COLOR } ) );
 
         return body;
     }
@@ -153,11 +148,11 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
         wheelInfo.m_wheelsDampingCompression = this.suspensionCompression;
         wheelInfo.m_frictionSlip = this.friction;
         wheelInfo.m_rollInfluence = this.rollInfluence;
-        this.wheelMeshes[index] = Vehicle._createWheelMesh( this.world, radius, width, new THREE.MeshPhongMaterial( { color: RigidBody.DEFAULT_COLRO } ) );
+        this.wheelMeshes[index] = Vehicle._createWheelMesh( this.world, radius, width, new THREE.MeshPhongMaterial( { color: DEFAULT_COLOR } ) );
         return wheelInfo;
     }
 
-    public sync( dt: any ): void {
+    protected _sync( dt: any ): void {
         let speed = this.getCurrentSpeedKmHour();
         this.breakingForce = 0;
         this.engineForce = 0;

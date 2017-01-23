@@ -5,7 +5,7 @@ import World from "./World";
  */
 export default class RigidBody extends Ammo.btRigidBody {
 
-    public static readonly DEFAULT_COLRO = 0x999999;
+    public static readonly DEFAULT_COLOR = 0x999999;
     public static readonly DISABLE_DEACTIVATION: number = 4;
     public static readonly TRANSFORM_AUX: Ammo.btTransform = new Ammo.btTransform();
 
@@ -20,7 +20,7 @@ export default class RigidBody extends Ammo.btRigidBody {
         depth: number, 
         mass: number = 0, 
         friction: number = 1, 
-        material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: RigidBody.DEFAULT_COLRO } ) 
+        material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: RigidBody.DEFAULT_COLOR } ) 
     ) {
         let geometry: Ammo.btBoxShape = new Ammo.btBoxShape( new Ammo.btVector3( width * 0.5, height * 0.5, depth * 0.5 ) );
         let mesh: THREE.Mesh;
@@ -44,14 +44,14 @@ export default class RigidBody extends Ammo.btRigidBody {
 
         if (mass > 0) {
             this.setActivationState( RigidBody.DISABLE_DEACTIVATION );
-            world.syncList.push( this.sync.bind(this) );
+            world.syncList.push( this._sync.bind(this) );
         }
 
         world.scene.add( this.mesh );
         world.physicsWorld.addRigidBody( this );
     }
 
-    public sync(): void {
+    protected _sync(): void {
         let ms = this.getMotionState();
         if ( ms ) {
             ms.getWorldTransform( RigidBody.TRANSFORM_AUX );
