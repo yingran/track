@@ -5,6 +5,7 @@ import World from "./classes/World";
 import Ground from "./classes/Ground";
 import RigidBody from "./classes/RigidBody";
 import Vehicle from "./classes/Vehicle";
+import Wall from "./classes/Wall";
 
 let world: World;
 let vehicle: Vehicle;
@@ -39,7 +40,7 @@ function addBoxes() {
 }
 
 function addGround() {
-    new Ground( world, 75, 75 );
+    new Ground( world, 100, 100 );
 }
 
 function addRamp() {
@@ -51,6 +52,13 @@ function addRamp() {
 
 function addVechicle() {
     vehicle = new Vehicle( world,  new THREE.Vector3( 0, 4, -20 ), World.ZERO_QUATERNION );
+}
+
+function addWalls() {
+    new Wall( world,  new THREE.Vector3( 0, 1, -50 ), World.ZERO_QUATERNION, 100, 2, 1, new THREE.MeshPhongMaterial( { color: 0x333333 } ) );
+    new Wall( world,  new THREE.Vector3( 0, 1, 50 ), World.ZERO_QUATERNION, 100, 2, 1, new THREE.MeshPhongMaterial( { color: 0x333333 } ) );
+    new Wall( world,  new THREE.Vector3( -50, 1, 0 ), World.ZERO_QUATERNION, 1, 2, 100, new THREE.MeshPhongMaterial( { color: 0x333333 } ) );
+    new Wall( world,  new THREE.Vector3( 50, 1, 0 ), World.ZERO_QUATERNION, 1, 2, 100, new THREE.MeshPhongMaterial( { color: 0x333333 } ) );
 }
 
 function keyup( e: KeyboardEvent ) {
@@ -80,6 +88,7 @@ function main(): void {
     addRamp();
     addBoxes();
     addVechicle();
+    addWalls();
     animate();
     
     window.addEventListener( "keydown", keydown);
