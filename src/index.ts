@@ -61,6 +61,21 @@ function addWalls() {
     new Wall( world,  new THREE.Vector3( 50, 1, 0 ), World.ZERO_QUATERNION, 1, 2, 100, new THREE.MeshPhongMaterial( { color: 0x333333 } ) );
 }
 
+function addWindmill() {
+    let mtlloader = new THREE.MTLLoader();
+    mtlloader.load( "/resources/meshes/windmill.mtl", ( material: any ) => {
+        let objloader = new THREE.OBJLoader();
+        material.preload();
+        objloader.setMaterials( material );
+        objloader.load( "/resources/meshes/windmill.obj", ( obj: THREE.Mesh ) => {
+            obj.position.set( -20, 0, 0 );
+            obj.scale.set( 0.1, 0.1, 0.1 );
+            obj.quaternion.setFromAxisAngle(  new THREE.Vector3( 1, 0, 0 ), -Math.PI / 2  );
+            world.scene.add( obj );
+        });
+    });
+}
+
 function keyup( e: KeyboardEvent ) {
     if ( keysActions[e.code] ) {
         vehicle.actions[keysActions[e.code]] = false;
@@ -89,6 +104,7 @@ function main(): void {
     addBoxes();
     addVechicle();
     addWalls();
+    addWindmill();
     animate();
     
     window.addEventListener( "keydown", keydown);

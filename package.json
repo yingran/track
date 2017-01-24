@@ -9,7 +9,7 @@
     "start-dev": "./node_modules/.bin/webpack-dev-server --inline --hot --content-base ./build/",
     "build": "npm run clean && npm run copy && npm run webpack",
     "clean": "./node_modules/.bin/del-cli ./build/*",
-    "copy": "cp ./src/index.html ./node_modules/three/build/three.js ./node_modules/three/examples/js/controls/OrbitControls.js ./node_modules/ammo.js/builds/ammo.js ./build/",
+    "copy": "cp ./src/index.html ./node_modules/three/build/three.js ./node_modules/three/examples/js/controls/OrbitControls.js ./node_modules/three/examples/js/loaders/MTLLoader.js ./node_modules/three/examples/js/loaders/OBJLoader.js ./node_modules/ammo.js/builds/ammo.js ./build/",
     "webpack": "./node_modules/.bin/webpack",
     "doc": "npm run rmdoc && npm run typedoc",
     "typedoc": "./node_modules/.bin/typedoc --options typedoc.json",
