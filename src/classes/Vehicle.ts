@@ -1,4 +1,4 @@
-import RigidBody from "./RigidBody";
+import Box from "./Box";
 import World from "./World";
 
 let DEFAULT_COLOR = 0x990000;
@@ -10,7 +10,7 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
 
     protected readonly world: World;
     protected readonly tuning: Ammo.btVehicleTuning;
-    protected classisBody: RigidBody;
+    protected classisBody: Box;
     public actions: any;
     
     // Vehicle contants
@@ -115,12 +115,12 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
 
     
 
-    private static _createClassisBody( world: World, pos: THREE.Vector3, quat: THREE.Quaternion ): RigidBody {
+    private static _createClassisBody( world: World, pos: THREE.Vector3, quat: THREE.Quaternion ): Box {
         let width: number = 1.8;
         let height: number = 0.6;
         let depth: number = 4;
         let mass: number = 800;
-        let body = new RigidBody( world, pos, quat, width, height, depth, mass, 1, new THREE.MeshPhongMaterial( { color: DEFAULT_COLOR } ) );
+        let body = new Box( world, pos, quat, width, height, depth, mass, 1, new THREE.MeshPhongMaterial( { color: DEFAULT_COLOR } ) );
 
         return body;
     }

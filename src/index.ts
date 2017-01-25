@@ -3,7 +3,7 @@ import * as Ammo from "ammo.js";
 
 import World from "./classes/World";
 import Ground from "./classes/Ground";
-import RigidBody from "./classes/RigidBody";
+import Box from "./classes/Box";
 import Vehicle from "./classes/Vehicle";
 import Wall from "./classes/Wall";
 
@@ -34,7 +34,7 @@ function addBoxes() {
     let nh = 6;
     for ( let j = 0; j < nw; j++ ) {
         for ( let i = 0; i < nh; i++ ) {
-            new RigidBody( world, new THREE.Vector3( size * j - ( size * (nw - 1) ) / 2, size * i, 10 ), World.ZERO_QUATERNION, size, size, size, 10 );
+            new Box( world, new THREE.Vector3( size * j - ( size * (nw - 1) ) / 2, size * i, 10 ), World.ZERO_QUATERNION, size, size, size, 10 );
         }
     }            
 }
@@ -47,7 +47,7 @@ function addRamp() {
     let ramp;
     let quaternion = new THREE.Quaternion( 0, 0, 0, 1 );
     quaternion.setFromAxisAngle( new THREE.Vector3( 1, 0, 0 ), -Math.PI / 18 );
-    new RigidBody( world, new THREE.Vector3( 0, -1.5, 0 ), quaternion, 8, 4, 10, 0 );
+    new Box( world, new THREE.Vector3( 0, -1.5, 0 ), quaternion, 8, 4, 10, 0 );
 }
 
 function addVechicle() {

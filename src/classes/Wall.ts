@@ -1,10 +1,10 @@
-import RigidBody from "./RigidBody";
+import Box from "./Box";
 import World from "./World";
 
 /**
  * Wall
  */
-export default class Wall extends RigidBody {
+export default class Wall extends Box {
     constructor( 
         world: World, 
         pos: THREE.Vector3, 
@@ -12,7 +12,7 @@ export default class Wall extends RigidBody {
         width: number, 
         height: number, 
         depth: number, 
-        material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: RigidBody.DEFAULT_COLOR } ) 
+        material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: Box.DEFAULT_COLOR } ) 
     ) {
         let mass = 0;
         let friction = 1;

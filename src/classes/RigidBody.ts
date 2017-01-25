@@ -13,24 +13,19 @@ export default class RigidBody extends Ammo.btRigidBody {
 
     constructor( 
         world: World, 
+        mesh: THREE.Mesh,
+        geometry: any,
         pos: THREE.Vector3, 
         quat: THREE.Quaternion, 
-        width: number, 
-        height: number, 
-        depth: number, 
         mass: number = 0, 
         friction: number = 1, 
         material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: RigidBody.DEFAULT_COLOR } ) 
     ) {
-        let geometry: Ammo.btBoxShape = new Ammo.btBoxShape( new Ammo.btVector3( width * 0.5, height * 0.5, depth * 0.5 ) );
-        let mesh: THREE.Mesh;
         let transform: Ammo.btTransform;
         let motionState: Ammo.btDefaultMotionState;
         let localInertia: Ammo.btVector3;
         let rbInfo: Ammo.btRigidBodyConstructionInfo;
         let sync: any;
-
-        mesh = _createMesh( pos, quat, width, height, depth, material );
 
         transform = _createTransform( pos, quat );
         motionState = new Ammo.btDefaultMotionState( transform );
@@ -61,15 +56,6 @@ export default class RigidBody extends Ammo.btRigidBody {
             this.mesh.quaternion.set( q.x(), q.y(), q.z(), q.w() );
         }
     }
-}
-
-function _createMesh( pos: THREE.Vector3, quat: THREE.Quaternion, width: number, height: number, depth: number,  material: THREE.MeshPhongMaterial ): THREE.Mesh {
-    let shape: THREE.BoxGeometry = new THREE.BoxGeometry( width, height, depth);
-    let mesh = new THREE.Mesh( shape, material );
-    mesh.position.copy( pos );
-    mesh.quaternion.copy( quat );
-
-    return mesh;
 }
 
 function _createTransform( pos: THREE.Vector3, quat: THREE.Quaternion ): Ammo.btTransform {

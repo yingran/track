@@ -1,12 +1,12 @@
-import RigidBody from "./RigidBody";
+import Box from "./Box";
 import World from "./World";
 
 /**
  * Ground
  */
-export default class Ground extends RigidBody {
+export default class Ground extends Box {
 
-    constructor( world: World, width: number, depth: number, friction: number = 2, material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: RigidBody.DEFAULT_COLOR } ) ) {
+    constructor( world: World, width: number, depth: number, friction: number = 2, material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: Box.DEFAULT_COLOR } ) ) {
         let pos: THREE.Vector3 = new THREE.Vector3( 0, -0.5, 0 );
         let quat: THREE.Quaternion = World.ZERO_QUATERNION;
         let height = 1;
