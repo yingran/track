@@ -4,6 +4,7 @@ import * as Ammo from "ammo.js";
 import World from "./classes/World";
 import Ground from "./classes/Ground";
 import Box from "./classes/Box";
+import Cylinder from "./classes/Cylinder";
 import Vehicle from "./classes/Vehicle";
 import Wall from "./classes/Wall";
 
@@ -61,6 +62,10 @@ function addWalls() {
     new Wall( world,  new THREE.Vector3( 50, 1, 0 ), World.ZERO_QUATERNION, 1, 2, 100, new THREE.MeshPhongMaterial( { color: 0x333333 } ) );
 }
 
+function addCylinder() {
+    new Cylinder( world, new THREE.Vector3( 10, 2.5, 10 ),  World.ZERO_QUATERNION, 1, 5, 0 );
+}
+
 function addWindmill() {
     let mtlloader = new THREE.MTLLoader();
     mtlloader.load( "/resources/meshes/windmill.mtl", ( material: any ) => {
@@ -102,6 +107,7 @@ function main(): void {
     addGround();
     addRamp();
     addBoxes();
+    addCylinder();
     addVechicle();
     addWalls();
     addWindmill();

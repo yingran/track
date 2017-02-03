@@ -2,36 +2,34 @@ import RigidBody from "./RigidBody";
 import World from "./World";
 
 /**
- * Box
+ * Cylinder
  */
-export default class Box extends RigidBody {
+export default class Cylinder extends RigidBody {
     
     constructor( 
         world: World, 
         pos: THREE.Vector3, 
         quat: THREE.Quaternion, 
-        width: number, 
+        radius: number, 
         height: number, 
-        depth: number, 
         mass: number = 0, 
         friction: number = 1, 
         material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: RigidBody.DEFAULT_COLOR } ) 
     ) {
-        let geometry: Ammo.btBoxShape = new Ammo.btBoxShape( new Ammo.btVector3( width * 0.5, height * 0.5, depth * 0.5 ) );
+        let geometry: Ammo.btCylinderShape = new Ammo.btCylinderShape( new Ammo.btVector3( radius, height, 0 ) );
         let mesh: THREE.Mesh;
-        mesh = Box._createMesh( pos, quat, width, height, depth, material );
+        mesh = Cylinder._createMesh( pos, quat, radius, height, material );
         super( world, mesh, geometry, pos, quat, mass, friction, material );
     }
     
     private static  _createMesh( 
         pos: THREE.Vector3, 
         quat: THREE.Quaternion, 
-        width: number, 
+        radius: number, 
         height: number, 
-        depth: number,  
         material: THREE.MeshPhongMaterial 
     ): THREE.Mesh {
-        let shape: THREE.BoxGeometry = new THREE.BoxGeometry( width, height, depth);
+        let shape: THREE.CylinderGeometry = new THREE.CylinderGeometry( radius, radius, height, 16);
         let mesh = new THREE.Mesh( shape, material );
         mesh.position.copy( pos );
         mesh.quaternion.copy( quat );
