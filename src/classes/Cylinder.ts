@@ -19,7 +19,7 @@ export default class Cylinder extends RigidBody {
         let geometry: Ammo.btCylinderShape = new Ammo.btCylinderShape( new Ammo.btVector3( radius, height, 0 ) );
         let mesh: THREE.Mesh;
         mesh = Cylinder._createMesh( pos, quat, radius, height, material );
-        super( world, mesh, geometry, pos, quat, mass, friction, material );
+        super( world, mesh, geometry, pos, quat, mass, friction );
     }
     
     private static  _createMesh( 

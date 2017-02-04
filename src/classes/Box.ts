@@ -20,7 +20,7 @@ export default class Box extends RigidBody {
         let geometry: Ammo.btBoxShape = new Ammo.btBoxShape( new Ammo.btVector3( width * 0.5, height * 0.5, depth * 0.5 ) );
         let mesh: THREE.Mesh;
         mesh = Box._createMesh( pos, quat, width, height, depth, material );
-        super( world, mesh, geometry, pos, quat, mass, friction, material );
+        super( world, mesh, geometry, pos, quat, mass, friction );
     }
     
     private static  _createMesh( 

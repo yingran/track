@@ -95,7 +95,7 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
         this.rollInfluence = 0.2;
         this.steeringIncrement = .04;
         this.steeringClamp = .5;
-        this.maxEngineForce = 8000;
+        this.maxEngineForce = 4000;
         this.maxBreakingForce = 100;
     }
 

@@ -7,6 +7,7 @@ import Box from "./classes/Box";
 import Cylinder from "./classes/Cylinder";
 import Vehicle from "./classes/Vehicle";
 import Wall from "./classes/Wall";
+import Windmill from "./classes/Windmill";
 
 let world: World;
 let vehicle: Vehicle;
@@ -19,7 +20,7 @@ let keysActions: any = {
 
 function animate(): void {
     requestAnimationFrame( animate );
-    let dt = world.clock.getDelta();        
+    let dt = world.clock.getDelta();
     for ( let i = 0; i < world.syncList.length; i++ ) {
         world.syncList[i]( dt );
     }
@@ -67,18 +68,7 @@ function addCylinder() {
 }
 
 function addWindmill() {
-    let mtlloader = new THREE.MTLLoader();
-    mtlloader.load( "/resources/meshes/windmill.mtl", ( material: any ) => {
-        let objloader = new THREE.OBJLoader();
-        material.preload();
-        objloader.setMaterials( material );
-        objloader.load( "/resources/meshes/windmill.obj", ( obj: THREE.Mesh ) => {
-            obj.position.set( -20, 0, 0 );
-            obj.scale.set( 0.1, 0.1, 0.1 );
-            obj.quaternion.setFromAxisAngle(  new THREE.Vector3( 1, 0, 0 ), -Math.PI / 2  );
-            world.scene.add( obj );
-        });
-    });
+    new Windmill( world, new THREE.Vector3( -20, 0, 0 ),  World.ZERO_QUATERNION );
 }
 
 function keyup( e: KeyboardEvent ) {

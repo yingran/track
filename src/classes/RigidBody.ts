@@ -10,16 +10,18 @@ export default class RigidBody extends Ammo.btRigidBody {
     public static readonly TRANSFORM_AUX: Ammo.btTransform = new Ammo.btTransform();
 
     public mesh: THREE.Mesh;
+    protected world: World;
+
+    private _appended: boolean;
 
     constructor( 
         world: World, 
-        mesh: THREE.Mesh,
+        mesh: any,
         geometry: any,
         pos: THREE.Vector3, 
         quat: THREE.Quaternion, 
         mass: number = 0, 
-        friction: number = 1, 
-        material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: RigidBody.DEFAULT_COLOR } ) 
+        friction: number = 1
     ) {
         let transform: Ammo.btTransform;
         let motionState: Ammo.btDefaultMotionState;
@@ -36,14 +38,23 @@ export default class RigidBody extends Ammo.btRigidBody {
         super( rbInfo );
         this.setFriction( friction );
         this.mesh = mesh;
+        this.world = world;
+        this._appended = false;
 
         if (mass > 0) {
             this.setActivationState( RigidBody.DISABLE_DEACTIVATION );
             world.syncList.push( this._sync.bind(this) );
         }
 
-        world.scene.add( this.mesh );
-        world.physicsWorld.addRigidBody( this );
+        this.world.physicsWorld.addRigidBody( this );
+        this.appendToWorld();
+    }
+
+    protected appendToWorld(): void {
+        if ( this.mesh && !this._appended ) {
+            this.world.scene.add( this.mesh );
+            this._appended = true;
+        }
     }
 
     protected _sync(): void {
@@ -52,9 +63,32 @@ export default class RigidBody extends Ammo.btRigidBody {
             ms.getWorldTransform( RigidBody.TRANSFORM_AUX );
             let p = RigidBody.TRANSFORM_AUX.getOrigin();
             let q = RigidBody.TRANSFORM_AUX.getRotation();
-            this.mesh.position.set( p.x(), p.y(), p.z() );
-            this.mesh.quaternion.set( q.x(), q.y(), q.z(), q.w() );
+            if ( this.mesh ) {
+                this.mesh.position.set( p.x(), p.y(), p.z() );
+                this.mesh.quaternion.set( q.x(), q.y(), q.z(), q.w() );
+            }
         }
+    }
+
+    protected static async loadMeshResource( mtlURL: string, objURL: string ) {
+        let mtlloader = new THREE.MTLLoader();
+        let objloader = new THREE.OBJLoader();
+        let material: any;
+        let mesh: any;
+        let _self: any;
+        material = await new Promise( ( resolve: any, reject: any ) => {
+            mtlloader.load( mtlURL, ( material: any ) => {
+                resolve( material );
+            } );
+        });
+        material.preload();
+        objloader.setMaterials( material );
+        mesh = await new Promise( ( resolve: any, reject: any ) => {
+            objloader.load( objURL, ( mesh: any ) => {
+                resolve( mesh );
+            } );
+        });
+        return mesh;
     }
 }
 
