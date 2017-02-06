@@ -10,7 +10,7 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
 
     protected readonly world: World;
     protected readonly tuning: Ammo.btVehicleTuning;
-    protected classisBody: Box;
+    public classisBody: Box;
     public actions: any;
     
     // Vehicle contants

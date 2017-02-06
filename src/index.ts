@@ -28,9 +28,18 @@ function animate(): void {
     world.controls.update();
     world.renderer.render( world.scene, world.camera );
     world.time += dt;
+    resetCamera();
 }
 
-function addBoxes() {    
+function resetCamera() {
+    let vehiclePosition = vehicle.classisBody.mesh.position;
+    world.camera.position.x = vehiclePosition.x;
+    world.camera.position.z = vehiclePosition.z;
+    world.controls.target.x = vehiclePosition.x;
+    world.controls.target.z = vehiclePosition.z;
+}
+
+function addBoxes() {
     let size = .75;
     let nw = 8;
     let nh = 6;

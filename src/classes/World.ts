@@ -33,6 +33,8 @@ export default class World {
         this.time = 0;
         this.domElement = this.renderer.domElement;
         this.controls = new THREE.OrbitControls( this.camera );
+        this.controls.enableZoom = false;
+        this.controls.enableRotate = false;
         this.syncList = [];
     }
 
@@ -66,10 +68,9 @@ function _createScene(): THREE.Scene {
  */
 function _createCamera( width: number, height: number ): THREE.PerspectiveCamera {
     let camera = new THREE.PerspectiveCamera( 60, width / height, 0.2, 2000);
-    camera.position.x = -4.84;
-    camera.position.y = 4.39;
-    camera.position.z = -35.11;
-    camera.lookAt( new THREE.Vector3( 0.33, -0.40, 0.85 ) );
+    camera.position.x = 0;
+    camera.position.y = 25;
+    camera.position.z = -25;
     return camera;
 }
 
