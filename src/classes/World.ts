@@ -69,8 +69,8 @@ function _createScene(): THREE.Scene {
 function _createCamera( width: number, height: number ): THREE.PerspectiveCamera {
     let camera = new THREE.PerspectiveCamera( 60, width / height, 0.2, 2000);
     camera.position.x = 0;
-    camera.position.y = 25;
-    camera.position.z = -25;
+    camera.position.y = 5;
+    camera.position.z = -5;
     return camera;
 }
 

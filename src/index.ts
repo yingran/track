@@ -34,7 +34,7 @@ function animate(): void {
 function resetCamera() {
     let vehiclePosition = vehicle.classisBody.mesh.position;
     world.camera.position.x = vehiclePosition.x;
-    world.camera.position.z = vehiclePosition.z;
+    world.camera.position.z = vehiclePosition.z - 5;
     world.controls.target.x = vehiclePosition.x;
     world.controls.target.z = vehiclePosition.z;
 }
@@ -86,6 +86,9 @@ function keyup( e: KeyboardEvent ) {
         e.preventDefault();
         e.stopPropagation();
         return false;
+    }
+    if ( e.code == "Space" ) {
+        console.log( `${vehicle.classisBody.mesh.rotation.x}, ${vehicle.classisBody.mesh.rotation.y}, ${vehicle.classisBody.mesh.rotation.z}` );
     }
 }
 
