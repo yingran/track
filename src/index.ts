@@ -33,8 +33,9 @@ function animate(): void {
 
 function resetCamera() {
     let vehiclePosition = vehicle.classisBody.mesh.position;
-    world.camera.position.x = vehiclePosition.x;
-    world.camera.position.z = vehiclePosition.z - 5;
+    let cameraPosition = vehicle.classisBody.mesh.localToWorld(new THREE.Vector3(0, 2.5, -5))
+    world.camera.position.x = cameraPosition.x;
+    world.camera.position.z = cameraPosition.z;
     world.controls.target.x = vehiclePosition.x;
     world.controls.target.z = vehiclePosition.z;
 }
@@ -88,7 +89,11 @@ function keyup( e: KeyboardEvent ) {
         return false;
     }
     if ( e.code == "Space" ) {
-        console.log( `${vehicle.classisBody.mesh.rotation.x}, ${vehicle.classisBody.mesh.rotation.y}, ${vehicle.classisBody.mesh.rotation.z}` );
+        //console.log( `${vehicle.classisBody.mesh.rotation.x}, ${vehicle.classisBody.mesh.rotation.y}, ${vehicle.classisBody.mesh.rotation.z}` );
+        //console.log(`${JSON.stringify(vehicle.classisBody.mesh.position)}`);
+        //console.log(`${JSON.stringify(vehicle.classisBody.mesh.getWorldPosition())}`);
+        //console.log(`${JSON.stringify(vehicle.classisBody.mesh.localToWorld(new THREE.Vector3(0, 3, -5)))}`);
+        //console.log("---------------");
     }
 }
 
