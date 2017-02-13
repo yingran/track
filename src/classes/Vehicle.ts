@@ -1,3 +1,5 @@
+import RigidBody from "./RigidBody";
+import Resource from "./Resource";
 import Box from "./Box";
 import World from "./World";
 
@@ -113,16 +115,21 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
         this._addWheel( new Ammo.btVector3( this.wheelHalfTrackBack, this.wheelAxisHeightBack, this.wheelAxisPositionBack), this.wheelRadiusBack, this.wheelWidthBack, false, this.BACK_RIGHT );
     }
 
-    
-
     private static _createClassisBody( world: World, pos: THREE.Vector3, quat: THREE.Quaternion ): Box {
         let width: number = 1.8;
         let height: number = 0.6;
         let depth: number = 4;
+        let friction: number = 1;
         let mass: number = 800;
-        let body = new Box( world, pos, quat, width, height, depth, mass, 1, new THREE.MeshPhongMaterial( { color: DEFAULT_COLOR } ) );
+        let mesh: THREE.Mesh = Resource.meshes[ "vehicleBody" ];
+        let geometry: Ammo.btBoxShape = new Ammo.btBoxShape( new Ammo.btVector3( width * 0.5, height * 0.5, depth * 0.5 ) );
+        let classisBody: RigidBody;
+        classisBody = new RigidBody( world, mesh, geometry, pos, quat, mass, friction );
+        mesh.position.set( pos.x, pos.y, pos.z );
+        classisBody.mesh = mesh;
+        classisBody.appendToWorld();
 
-        return body;
+        return classisBody;
     }
 
     private static _createWheelMesh( world: World, radius: number, width: number, material: THREE.Material ): THREE.Mesh {
@@ -213,7 +220,9 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
         tm = this.getChassisWorldTransform();
         p = tm.getOrigin();
         q = tm.getRotation();
-        this.classisBody.mesh.position.set(p.x(), p.y(), p.z());
-        this.classisBody.mesh.quaternion.set(q.x(), q.y(), q.z(), q.w());
+        if ( this.classisBody.mesh ) {
+            this.classisBody.mesh.position.set(p.x(), p.y(), p.z());
+            this.classisBody.mesh.quaternion.set(q.x(), q.y(), q.z(), q.w());
+        }
     }
 }

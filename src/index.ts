@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import * as Ammo from "ammo.js";
 
+import Resource from "./classes/Resource";
 import World from "./classes/World";
 import Ground from "./classes/Ground";
 import Box from "./classes/Box";
@@ -88,13 +89,6 @@ function keyup( e: KeyboardEvent ) {
         e.stopPropagation();
         return false;
     }
-    if ( e.code == "Space" ) {
-        //console.log( `${vehicle.classisBody.mesh.rotation.x}, ${vehicle.classisBody.mesh.rotation.y}, ${vehicle.classisBody.mesh.rotation.z}` );
-        //console.log(`${JSON.stringify(vehicle.classisBody.mesh.position)}`);
-        //console.log(`${JSON.stringify(vehicle.classisBody.mesh.getWorldPosition())}`);
-        //console.log(`${JSON.stringify(vehicle.classisBody.mesh.localToWorld(new THREE.Vector3(0, 3, -5)))}`);
-        //console.log("---------------");
-    }
 }
 
 function keydown( e: KeyboardEvent ) {
@@ -106,7 +100,11 @@ function keydown( e: KeyboardEvent ) {
     }
 }
 
-function main(): void {
+function loadResource() {
+
+}
+
+function start(): void {
     let container = document.querySelector("#container");
     world = new World( window.innerWidth, window.innerHeight );
     container.appendChild( world.domElement );
@@ -125,6 +123,12 @@ function main(): void {
     window.addEventListener( "resize", () => {
         world.resize( window.innerWidth, window.innerHeight );
     } );
+}
+
+function main() {
+    Resource.load().then( () => {
+        start();
+    });
 }
 
 main();

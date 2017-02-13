@@ -50,7 +50,7 @@ export default class RigidBody extends Ammo.btRigidBody {
         this.appendToWorld();
     }
 
-    protected appendToWorld(): void {
+    public appendToWorld(): void {
         if ( this.mesh && !this._appended ) {
             this.world.scene.add( this.mesh );
             this._appended = true;
@@ -68,27 +68,6 @@ export default class RigidBody extends Ammo.btRigidBody {
                 this.mesh.quaternion.set( q.x(), q.y(), q.z(), q.w() );
             }
         }
-    }
-
-    protected static async loadMeshResource( mtlURL: string, objURL: string ) {
-        let mtlloader = new THREE.MTLLoader();
-        let objloader = new THREE.OBJLoader();
-        let material: any;
-        let mesh: any;
-        let _self: any;
-        material = await new Promise( ( resolve: any, reject: any ) => {
-            mtlloader.load( mtlURL, ( material: any ) => {
-                resolve( material );
-            } );
-        });
-        material.preload();
-        objloader.setMaterials( material );
-        mesh = await new Promise( ( resolve: any, reject: any ) => {
-            objloader.load( objURL, ( mesh: any ) => {
-                resolve( mesh );
-            } );
-        });
-        return mesh;
     }
 }
 
