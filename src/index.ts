@@ -64,7 +64,7 @@ function addRamp() {
 }
 
 function addVechicle() {
-    vehicle = new Vehicle( world,  new THREE.Vector3( 0, 4, -20 ), World.ZERO_QUATERNION );
+    vehicle = new Vehicle( world,  new THREE.Vector3( 0, 0, -20 ), World.ZERO_QUATERNION );
 }
 
 function addWalls() {

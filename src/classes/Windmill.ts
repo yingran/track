@@ -20,7 +20,6 @@ export default class Windmill extends RigidBody {
         mesh.position.set( pos.x, pos.y, pos.z );
         super( world, mesh, geometry, pos, quat, mass, friction );
         this.mesh = mesh;
-        this.appendToWorld();
     }
 
 }

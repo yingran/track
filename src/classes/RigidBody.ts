@@ -12,8 +12,6 @@ export default class RigidBody extends Ammo.btRigidBody {
     public mesh: THREE.Mesh;
     protected world: World;
 
-    private _appended: boolean;
-
     constructor( 
         world: World, 
         mesh: any,
@@ -39,7 +37,6 @@ export default class RigidBody extends Ammo.btRigidBody {
         this.setFriction( friction );
         this.mesh = mesh;
         this.world = world;
-        this._appended = false;
 
         if (mass > 0) {
             this.setActivationState( RigidBody.DISABLE_DEACTIVATION );
@@ -47,14 +44,7 @@ export default class RigidBody extends Ammo.btRigidBody {
         }
 
         this.world.physicsWorld.addRigidBody( this );
-        this.appendToWorld();
-    }
-
-    public appendToWorld(): void {
-        if ( this.mesh && !this._appended ) {
-            this.world.scene.add( this.mesh );
-            this._appended = true;
-        }
+        this.world.scene.add( this.mesh );
     }
 
     protected _sync(): void {

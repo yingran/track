@@ -127,7 +127,6 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
         classisBody = new RigidBody( world, mesh, geometry, pos, quat, mass, friction );
         mesh.position.set( pos.x, pos.y, pos.z );
         classisBody.mesh = mesh;
-        classisBody.appendToWorld();
 
         return classisBody;
     }
