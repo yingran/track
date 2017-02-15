@@ -27,7 +27,7 @@ export default class RigidBody extends Ammo.btRigidBody {
         let rbInfo: Ammo.btRigidBodyConstructionInfo;
         let sync: any;
 
-        transform = _createTransform( pos, quat );
+        transform = RigidBody._createTransform( pos, quat );
         motionState = new Ammo.btDefaultMotionState( transform );
         localInertia = new Ammo.btVector3(0, 0, 0);
         geometry.calculateLocalInertia( mass, localInertia );
@@ -59,12 +59,13 @@ export default class RigidBody extends Ammo.btRigidBody {
             }
         }
     }
-}
 
-function _createTransform( pos: THREE.Vector3, quat: THREE.Quaternion ): Ammo.btTransform {
-    let transform = new Ammo.btTransform();
-    transform.setIdentity();
-    transform.setOrigin( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
-    transform.setRotation( new Ammo.btQuaternion( quat.x, quat.y, quat.z, quat.w ) );
-    return transform;
+    private static _createTransform( pos: THREE.Vector3, quat: THREE.Quaternion ): Ammo.btTransform {
+        let transform = new Ammo.btTransform();
+        transform.setIdentity();
+        transform.setOrigin( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
+        transform.setRotation( new Ammo.btQuaternion( quat.x, quat.y, quat.z, quat.w ) );
+        return transform;
+    }
+    
 }

@@ -23,7 +23,7 @@ export default class Box extends RigidBody {
         super( world, mesh, geometry, pos, quat, mass, friction );
     }
     
-    private static  _createMesh( 
+    private static _createMesh( 
         pos: THREE.Vector3, 
         quat: THREE.Quaternion, 
         width: number, 
