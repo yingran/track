@@ -9,24 +9,29 @@ import Box from "./Box";
  */
 export default class Map {
 
-    private WIDTH: number = 200;
-    private DEPTH: number = 200;
+    private width: number;
+    private depth: number;
     private world: World;
 
-    constructor( world: World ) {
+    public startLine: THREE.Mesh;
+
+    constructor( world: World, mapData: any ) {
         this.world = world;
-        new Ground( world, this.WIDTH, this.WIDTH );
+        this.width = mapData[ "size" ][ 0 ];
+        this.depth = mapData[ "size" ][ 2 ];
+        new Ground( world, this.width, this.width );
         this._addInvisibleBarriers();
+        this._addStartingLine( mapData[ "start" ][ "position" ], mapData[ "start" ][ "rotation" ] );
     }
 
     /**
      * add the 4 invisible barriers
      */
     private _addInvisibleBarriers() {
-        this._addInvisibleBarrier( new THREE.Vector3( 0, 0, -this.DEPTH/2 ), new THREE.Quaternion( 0, 0, 0, 1), this.WIDTH );
-        this._addInvisibleBarrier( new THREE.Vector3( 0, 0, this.DEPTH/2 ), new THREE.Quaternion( 0, 0, 0, 1), this.WIDTH );
-        this._addInvisibleBarrier( new THREE.Vector3( -this.WIDTH/2, 0, 0 ), ( new THREE.Quaternion( 0, 0, 0, 1) ).setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ),  Math.PI/2 ), this.DEPTH );
-        this._addInvisibleBarrier( new THREE.Vector3( this.WIDTH/2, 0, 0 ), ( new THREE.Quaternion( 0, 0, 0, 1) ).setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ),  Math.PI/2 ), this.DEPTH );
+        this._addInvisibleBarrier( new THREE.Vector3( 0, 0, -this.depth/2 ), new THREE.Quaternion( 0, 0, 0, 1), this.width );
+        this._addInvisibleBarrier( new THREE.Vector3( 0, 0, this.depth/2 ), new THREE.Quaternion( 0, 0, 0, 1), this.width );
+        this._addInvisibleBarrier( new THREE.Vector3( -this.width/2, 0, 0 ), ( new THREE.Quaternion( 0, 0, 0, 1) ).setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ),  Math.PI/2 ), this.depth );
+        this._addInvisibleBarrier( new THREE.Vector3( this.width/2, 0, 0 ), ( new THREE.Quaternion( 0, 0, 0, 1) ).setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ),  Math.PI/2 ), this.depth );
     }
 
     /**
@@ -55,17 +60,32 @@ export default class Map {
         this.world.physicsWorld.addRigidBody( rigidBody );
 
         //this._showInvisbileBarrier( pos, quat );
-    }    
+    }
+
+    /**
+     * add starting line
+     */
+    private _addStartingLine( position: Array<number>, rotation: number ) {
+        let pos: THREE.Vector3 = new THREE.Vector3( position[0], position[1], position[2] );
+        let quat: THREE.Quaternion = new THREE.Quaternion( 0, 0, 0, 1 ).setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), rotation*Math.PI/180 );
+        let shape: THREE.BoxGeometry = new THREE.BoxGeometry( 10, 0.01, 0.5 );
+        let material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff } )
+        let mesh = new THREE.Mesh( shape, material );
+        mesh.position.copy( pos );
+        mesh.quaternion.copy( quat );
+        this.world.scene.add( mesh );
+        this.startLine = mesh;
+    }
     
     /**
      * check the barrier's position
      */
-    private _showInvisbileBarrier( 
+    private _showInvisbileBarrier ( 
         pos: THREE.Vector3, 
         quat: THREE.Quaternion,
         material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: 0x009900 } ) 
     ): void {
-        let shape: THREE.BoxGeometry = new THREE.BoxGeometry( this.WIDTH, 2, 0.2 );
+        let shape: THREE.BoxGeometry = new THREE.BoxGeometry( this.width, 2, 0.2 );
         let mesh = new THREE.Mesh( shape, material );
         mesh.position.copy( pos );
         mesh.quaternion.copy( quat );

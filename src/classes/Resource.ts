@@ -5,11 +5,16 @@
 export default class Resource {
 
     public static meshes: any = {};
+    public static maps: any = {};
 
     public static readonly meshResource: any = {
         windmill: [ "windmill.mtl", "windmill.obj" ],
         vehicleBody: [ "vehiclebody.mtl", "vehiclebody.obj" ]
     };
+
+    public static readonly mapResource: Array<string> = [
+        "test"
+    ]
 
     counstructor() {
     }
@@ -20,6 +25,15 @@ export default class Resource {
                 Resource._loadMeshResource( `./resources/meshes/${Resource.meshResource[ key ][ 0 ]}`, `./resources/meshes/${Resource.meshResource[ key ][ 1 ]}` )
                     .then( ( mesh ) => {
                         resolve( mesh );
+                    });
+            });
+        }
+
+        for ( let i = 0, len = Resource.mapResource.length; i < len; i++ ) {
+            Resource.maps[ Resource.mapResource[ i ] ] = await new Promise( (resolve: any, reject: any ) => {
+                Resource._loadMapResource( `./resources/maps/${Resource.mapResource[ i ]}.json` )
+                    .then( ( data ) => {
+                        resolve( data );
                     });
             });
         }
@@ -43,5 +57,17 @@ export default class Resource {
             } );
         });
         return mesh;
+    }
+
+    private static async _loadMapResource( url: string ) {
+        let loader = new THREE.FileLoader();
+        let mapData: any;
+        loader.setResponseType( "json" );
+        mapData = await new Promise( ( resolve: any, reject: any ) => {
+            loader.load( url, ( data: any ) => {
+                resolve( data );
+            });
+        });
+        return mapData;
     }
 }

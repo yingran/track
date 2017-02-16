@@ -34,7 +34,7 @@ function animate(): void {
 
 function resetCamera() {
     let vehiclePosition = vehicle.classisBody.mesh.position;
-    let cameraPosition = vehicle.classisBody.mesh.localToWorld(new THREE.Vector3(0, 2.5, -5))
+    let cameraPosition = vehicle.classisBody.mesh.localToWorld(new THREE.Vector3(0, 2.5, -5));
     world.camera.position.x = cameraPosition.x;
     world.camera.position.z = cameraPosition.z;
     world.controls.target.x = vehiclePosition.x;
@@ -42,7 +42,7 @@ function resetCamera() {
 }
 
 function addVechicle() {
-    vehicle = new Vehicle( world,  new THREE.Vector3( 0, 0, -20 ), World.ZERO_QUATERNION );
+    vehicle = new Vehicle( world, map.startLine.position, World.ZERO_QUATERNION );
 }
 
 function keyup( e: KeyboardEvent ) {
@@ -64,10 +64,10 @@ function keydown( e: KeyboardEvent ) {
 }
 
 function start(): void {
-    let container = document.querySelector("#container");
+    let container = document.querySelector( "#container" );
     world = new World( window.innerWidth, window.innerHeight );
     container.appendChild( world.domElement );
-    map = new Map( world );
+    map = new Map( world, Resource.maps[ "test" ] );
 
     addVechicle();
     animate();
