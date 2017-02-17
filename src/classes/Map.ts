@@ -68,7 +68,7 @@ export default class Map {
     private _addStartingLine( position: Array<number>, rotation: number ) {
         let pos: THREE.Vector3 = new THREE.Vector3( position[0], position[1], position[2] );
         let quat: THREE.Quaternion = new THREE.Quaternion( 0, 0, 0, 1 ).setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), rotation*Math.PI/180 );
-        let shape: THREE.BoxGeometry = new THREE.BoxGeometry( 10, 0.01, 0.5 );
+        let shape: THREE.BoxGeometry = new THREE.BoxGeometry( 20, 0.01, 0.5 );
         let material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff } )
         let mesh = new THREE.Mesh( shape, material );
         mesh.position.copy( pos );

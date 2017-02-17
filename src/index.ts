@@ -42,7 +42,11 @@ function resetCamera() {
 }
 
 function addVechicle() {
-    vehicle = new Vehicle( world, map.startLine.position, World.ZERO_QUATERNION );
+    let quat: THREE.Quaternion;
+    map.startLine.getWorldPosition();
+    quat = new THREE.Quaternion( 0, 0, 0, 1 );
+    quat.setFromEuler( map.startLine.rotation );
+    vehicle = new Vehicle( world, map.startLine.localToWorld(new THREE.Vector3(0, 0, -5)), quat );
 }
 
 function keyup( e: KeyboardEvent ) {

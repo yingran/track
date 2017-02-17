@@ -2,7 +2,7 @@
     "size": [ 210, 0, 210 ],
     "start": {
         "position": [ 95, 0, -95 ],
-        "rotation": 0
+        "rotation": -90
     },
     "terminal": [
         [ 80, 0, -90 ],
