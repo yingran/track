@@ -2,6 +2,7 @@ import RigidBody from "./RigidBody";
 import World from "./World";
 import Ground from "./Ground";
 import Wall from "./Wall";
+import Windmill from "./Windmill";
 import Box from "./Box";
 
 /**
@@ -22,6 +23,7 @@ export default class Map {
         new Ground( world, this.width, this.width );
         this._addInvisibleBarriers();
         this._addStartingLine( mapData[ "start" ][ "position" ], mapData[ "start" ][ "rotation" ] );
+        this._addBodies( mapData["bodies"] );
     }
 
     /**
@@ -65,7 +67,7 @@ export default class Map {
     /**
      * add starting line
      */
-    private _addStartingLine( position: Array<number>, rotation: number ) {
+    private _addStartingLine( position: Array<number>, rotation: number ): void {
         let pos: THREE.Vector3 = new THREE.Vector3( position[0], position[1], position[2] );
         let quat: THREE.Quaternion = new THREE.Quaternion( 0, 0, 0, 1 ).setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), rotation*Math.PI/180 );
         let shape: THREE.BoxGeometry = new THREE.BoxGeometry( 20, 0.01, 0.5 );
@@ -75,6 +77,31 @@ export default class Map {
         mesh.quaternion.copy( quat );
         this.world.scene.add( mesh );
         this.startLine = mesh;
+    }
+
+    /**
+     * add bodies
+     */
+    private _addBodies( bodies: any ): void {
+        for ( let key in bodies ) {
+            switch ( key ) {
+                case "wall":
+                bodies[ key ].forEach( ( data: any ) => {
+                    let pos = new THREE.Vector3( data["position"][0], data["position"][1], data["position"][2] );
+                    let quat = new THREE.Quaternion( 0, 0, 0, 1 );
+                    quat.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), data["rotation"]*Math.PI/180 );
+                    new Wall( this.world, pos, quat, data["length"] );
+                });
+                case "windmill":
+                bodies[ key ].forEach( ( data: any ) => {
+                    let pos = new THREE.Vector3( data["position"][0], data["position"][1], data["position"][2] );
+                    let quat = new THREE.Quaternion( 0, 0, 0, 1 );
+                    quat.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), data["rotation"]*Math.PI/180 );
+                    new Windmill( this.world, pos, quat );
+                });
+                default:
+            }
+        }
     }
     
     /**

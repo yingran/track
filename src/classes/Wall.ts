@@ -9,13 +9,13 @@ export default class Wall extends Box {
         world: World, 
         pos: THREE.Vector3, 
         quat: THREE.Quaternion, 
-        width: number, 
-        height: number, 
-        depth: number, 
-        material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: Box.DEFAULT_COLOR } ) 
+        length: number, 
+        material: THREE.MeshPhongMaterial = new THREE.MeshPhongMaterial( { color: 0x009900 } ) 
     ) {
         let mass = 0;
         let friction = 1;
-        super( world, pos, quat, width, height, depth, mass, friction, material );
+        let height = 3;
+        let depth = 0.2;
+        super( world, pos, quat, length, height, depth, mass, friction, material );
     }
 }
