@@ -2,7 +2,7 @@ import RigidBody from "./RigidBody";
 import World from "./World";
 import Ground from "./Ground";
 import Wall from "./Wall";
-import Windmill from "./Windmill";
+import Tree from "./Tree";
 import Box from "./Box";
 
 /**
@@ -92,13 +92,15 @@ export default class Map {
                     quat.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), data["rotation"]*Math.PI/180 );
                     new Wall( this.world, pos, quat, data["length"] );
                 });
-                case "windmill":
+                break;
+                case "tree":
                 bodies[ key ].forEach( ( data: any ) => {
                     let pos = new THREE.Vector3( data["position"][0], data["position"][1], data["position"][2] );
                     let quat = new THREE.Quaternion( 0, 0, 0, 1 );
                     quat.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), data["rotation"]*Math.PI/180 );
-                    new Windmill( this.world, pos, quat );
+                    new Tree( this.world, pos, quat );
                 });
+                break;
                 default:
             }
         }

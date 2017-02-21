@@ -8,7 +8,7 @@ export default class Resource {
     public static maps: any = {};
 
     public static readonly meshResource: any = {
-        windmill: [ "windmill.mtl", "windmill.obj" ],
+        tree: [ "tree.mtl", "tree.obj" ],
         vehicleBody: [ "vehiclebody.mtl", "vehiclebody.obj" ]
     };
 

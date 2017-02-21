@@ -4,7 +4,7 @@ import Resource from "./Resource";
 import RigidBody from "./RigidBody";
 import World from "./World";
 
-export default class Windmill extends RigidBody {
+export default class Tree extends RigidBody {
 
     constructor( 
         world: World, 
@@ -16,7 +16,7 @@ export default class Windmill extends RigidBody {
         let mass = 0;
         let friction = 1;
         let geometry: Ammo.btCylinderShape = new Ammo.btCylinderShape( new Ammo.btVector3( radius, height, 0 ) );
-        let mesh: THREE.Mesh = Resource.meshes[ "windmill" ];
+        let mesh: THREE.Mesh = Resource.meshes[ "tree" ];
         mesh.position.set( pos.x, pos.y, pos.z );
         super( world, mesh, geometry, pos, quat, mass, friction );
         this.mesh = mesh;

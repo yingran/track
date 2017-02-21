@@ -7,7 +7,6 @@ import Map from "./classes/Map";
 import Box from "./classes/Box";
 import Cylinder from "./classes/Cylinder";
 import Vehicle from "./classes/Vehicle";
-import Windmill from "./classes/Windmill";
 
 let world: World;
 let map: Map;
