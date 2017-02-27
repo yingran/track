@@ -66,6 +66,7 @@ module.exports = {
     
     externals: {
         "three": "THREE",
-        "ammo.js": "Ammo"
+        "ammo.js": "Ammo",
+        "socket.io-client": "io"
     }
 };

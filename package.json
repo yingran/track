@@ -9,7 +9,9 @@
     "start-dev": "./node_modules/.bin/webpack-dev-server --inline --hot --content-base ./build/",
     "build": "npm run clean && npm run copy && npm run webpack",
     "clean": "./node_modules/.bin/del-cli ./build/*",
-    "copy": "cp ./src/index.html ./node_modules/three/build/three.js ./node_modules/three/examples/js/controls/OrbitControls.js ./node_modules/three/examples/js/loaders/MTLLoader.js ./node_modules/three/examples/js/loaders/OBJLoader.js ./node_modules/ammo.js/builds/ammo.js ./build/",
+    "copy": "npm run copy-files && npm run copy-resources",
+    "copy-files": "cp ./src/index.html ./node_modules/three/build/three.js ./node_modules/three/examples/js/controls/OrbitControls.js ./node_modules/three/examples/js/loaders/MTLLoader.js ./node_modules/three/examples/js/loaders/OBJLoader.js ./node_modules/ammo.js/builds/ammo.js ./node_modules/socket.io-client/dist/socket.io.min.js ./build/",
+    "copy-resources": "cp ./src/resources/**/* ./build/resources/",
     "webpack": "./node_modules/.bin/webpack",
     "doc": "npm run rmdoc && npm run typedoc",
     "typedoc": "./node_modules/.bin/typedoc --options typedoc.json",
@@ -30,10 +32,12 @@
   "homepage": "https://github.com/yingran/track#readme",
   "dependencies": {
     "ammo.js": "git+https://github.com/kripken/ammo.js.git",
+    "socket.io-client": "^1.7.3",
     "three": "^0.83.0"
   },
   "devDependencies": {
     "@types/ammo": "github:yingran/ammojs-tsd",
+    "@types/socket.io-client": "^1.4.29",
     "@types/three": "0.0.28",
     "css-loader": "^0.26.1",
     "csso-loader": "^0.2.0",

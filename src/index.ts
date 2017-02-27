@@ -1,91 +1,45 @@
-import * as THREE from "three";
-import * as Ammo from "ammo.js";
+import * as io from "socket.io-client";
 
-import Resource from "./classes/Resource";
-import World from "./classes/World";
-import Map from "./classes/Map";
-import Box from "./classes/Box";
-import Cylinder from "./classes/Cylinder";
-import Vehicle from "./classes/Vehicle";
+import Game from "./classes/Game";
+import Player from "./classes/Player";
+import Hall from "./classes/Hall";
+import {
 
-let world: World;
-let map: Map;
-let vehicle: Vehicle;
-let keysActions: any = {
-    "KeyW": "acceleration",
-    "KeyS": "braking",
-    "KeyA": "left",
-    "KeyD": "right"
-};
+} from "./classes/Const";
 
-function animate(): void {
-    requestAnimationFrame( animate );
-    let dt = world.clock.getDelta();
-    for ( let i = 0; i < world.syncList.length; i++ ) {
-        world.syncList[i]( dt );
+let socket = io( "http://localhost:3000" );
+let hall = new Hall( socket );
+let player = new Player( socket );
+
+let containerPlayer: any = document.getElementById( "player" );
+let containerWelcome: any = document.getElementById( "welcome" );
+
+
+function connect() {
+    containerWelcome.style.display = "none";
+    if ( !player.nick ) {
+        containerPlayer.style.display = "block";
+    } else {
+        hall.enter();
     }
-    world.physicsWorld.stepSimulation( dt, 10 );
-    world.controls.update();
-    world.renderer.render( world.scene, world.camera );
-    world.time += dt;
-    resetCamera();
+
+    handleSetNick();
 }
 
-function resetCamera() {
-    let vehiclePosition = vehicle.classisBody.mesh.position;
-    let cameraPosition = vehicle.classisBody.mesh.localToWorld(new THREE.Vector3(0, 2.5, -5));
-    world.camera.position.x = cameraPosition.x;
-    world.camera.position.z = cameraPosition.z;
-    world.controls.target.x = vehiclePosition.x;
-    world.controls.target.z = vehiclePosition.z;
-}
-
-function addVechicle() {
-    let quat: THREE.Quaternion;
-    map.startLine.getWorldPosition();
-    quat = new THREE.Quaternion( 0, 0, 0, 1 );
-    quat.setFromEuler( map.startLine.rotation );
-    vehicle = new Vehicle( world, map.startLine.localToWorld(new THREE.Vector3(0, 0, -5)), quat );
-}
-
-function keyup( e: KeyboardEvent ) {
-    if ( keysActions[e.code] ) {
-        vehicle.actions[keysActions[e.code]] = false;
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-    }
-}
-
-function keydown( e: KeyboardEvent ) {
-    if ( keysActions[e.code] ) {
-        vehicle.actions[keysActions[e.code]] = true;
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-    }
-}
-
-function start(): void {
-    let container = document.querySelector( "#container" );
-    world = new World( window.innerWidth, window.innerHeight );
-    container.appendChild( world.domElement );
-    map = new Map( world, Resource.maps[ "test" ] );
-
-    addVechicle();
-    animate();
-    
-    window.addEventListener( "keydown", keydown);
-    window.addEventListener( "keyup", keyup);
-    window.addEventListener( "resize", () => {
-        world.resize( window.innerWidth, window.innerHeight );
-    } );
-}
-
-function main() {
-    Resource.load().then( () => {
-        start();
+function handleSetNick() {
+    let inputNick: any = document.getElementById( "input-nick" );
+    let formNick: any = document.getElementById( "form-nick" );
+    formNick.addEventListener( "submit", ( evt: Event )=> {
+        evt.preventDefault();
+        if ( !inputNick.value ) {
+            alert( "请输入昵称！" );
+            return;
+        }
+        player.setNick( inputNick.value );
     });
 }
 
-main();
+socket.on( "connect", connect);
+socket.on( "disconnect", ()=> {
+    console.log( "disconnect" );
+});
