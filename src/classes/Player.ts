@@ -1,6 +1,10 @@
 import { 
     KEY_LOCALSTORAGE_PLAYER_ID, 
-    KEY_LOCALSTORAGE_PLAYER_NICK,
+    KEY_LOCALSTORAGE_PLAYER_NAME,
+
+    EVENT_CREATE_PLAYER,
+    EVENT_RENAME_PLAYER,
+
     EVENT_CREATE_ROOM,
     EVENT_JOIN_ROOM,
     EVENT_LEAVE_ROOM,
@@ -10,25 +14,31 @@ import {
 /**
  * Player
  */
-
 export default class Player {
 
-    public nick: string;
+    public name: string;
     readonly id: string;
     readonly socket: SocketIOClient.Socket;
 
     constructor( socket: SocketIOClient.Socket ) {
         this.id = this._getIdFromStorage();
-        this.nick = this._getNickFromStorage();
+        this.name = this._getnameFromStorage();
         this.socket = socket;
+        this.socket.emit( EVENT_CREATE_PLAYER, JSON.stringify({
+            "id": this.id,
+            "name": this.name
+        }));
     }
 
     /**
-     * set nick.
+     * set name.
      */
-    public setNick( nick: string ): void {
-        this.nick = nick;
-        localStorage.setItem( KEY_LOCALSTORAGE_PLAYER_NICK, nick );
+    public setName( name: string ): void {
+        this.name = name;
+        localStorage.setItem( KEY_LOCALSTORAGE_PLAYER_NAME, name );
+        this.socket.emit( EVENT_RENAME_PLAYER, JSON.stringify({
+            "name": this.name
+        }));
     }
 
     /**
@@ -45,8 +55,8 @@ export default class Player {
         if ( !this.id ) {
             throw( "the player has no id." );
         }
-        if ( !this.nick ) {
-            throw( "the player has no nick." );
+        if ( !this.name ) {
+            throw( "the player has no name." );
         }
         this.socket.emit( EVENT_CREATE_ROOM );
     }
@@ -59,8 +69,8 @@ export default class Player {
         if ( !this.id ) {
             throw( "the player has no id." );
         }
-        if ( !this.nick ) {
-            throw( "the player has no nick." );
+        if ( !this.name ) {
+            throw( "the player has no name." );
         }
         this.socket.emit( EVENT_JOIN_ROOM, { "name": room } );
     }
@@ -85,10 +95,10 @@ export default class Player {
     }
 
     /**
-     * get nick from localStorage. if no nick in localStorage, will return null.
+     * get name from localStorage. if no name in localStorage, will return null.
      */
-    private _getNickFromStorage(): string {
-        let nick = localStorage.getItem( KEY_LOCALSTORAGE_PLAYER_NICK );
-        return nick;
+    private _getnameFromStorage(): string {
+        let name = localStorage.getItem( KEY_LOCALSTORAGE_PLAYER_NAME );
+        return name;
     }
 }
