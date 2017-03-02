@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>赛车游戏</title>
+        <title>TEST</title>
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
         <link type="text/css" rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" />
         <link type="text/css" rel="stylesheet" href="./style.css" />
@@ -36,20 +36,27 @@
             </div>
         </div>
         <div class="container" id="room">
-            <h2>玩家列表</h2>
+            <h2></h2>
             <div class="row">
                 <div class="col-md-8">
                     <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>玩家列表</th>
+                            </tr>
+                        </thead>
                         <tbody id="player-list">
                         </tbody>
                     </table>
                 </div>
                 <div class="col-md-4">
+                    <button type="button" class="btn btn-success hidden" id="btn-start-game" >开始游戏</button>
                     <button type="button" class="btn btn-default" id="btn-leave-room" >退出房间</button>
                 </div>
             </div>
         </div>
         <div class="container" id="game"></div>
+        <div id="countdown"></div>
 
         <script src="./three.js"></script>
         <script src="./OrbitControls.js"></script>

@@ -6,32 +6,61 @@ import Hall from "./classes/Hall";
 import Room from "./classes/Room";
 import {
     EVENT_JOIN_ROOM,
-    EVENT_LEAVE_ROOM
+    EVENT_LEAVE_ROOM,
+    EVENT_PLAYER_LIST,
+    EVENT_ENTER_GAME,
+    EVENT_START_GAME,
+    EVENT_COUNTDOWN
 } from "./classes/Const";
 
-let socket = io( "http://localhost:3000" );
+let socket = io( "http://localhost:8081" );
 let hall: Hall;
 let player: Player;
 let room: Room;
 
 let containerPlayer: any = document.getElementById( "player" );
 let containerWelcome: any = document.getElementById( "welcome" );
+let containerCountdown: any = document.getElementById( "countdown" );
 
 function connect() {
     hall = new Hall( socket );
     player = new Player( socket );
+    room = new Room( socket );
     enterHall();
 
     socket.on( EVENT_JOIN_ROOM, ( data: any )=> {
         data = JSON.parse( data );
-        room = new Room( socket, data[ "room" ]);
+        room.setName( data[ "room" ] );
         hideAllContainer();
-        room.show( data[ "players" ] );
+        room.show();
     });
 
     socket.on( EVENT_LEAVE_ROOM, ( data: any )=> {
         hideAllContainer();
-        hall.show();
+        hall.enter();
+    });
+
+    socket.on( EVENT_ENTER_GAME, ( data: any ) => {
+        hideAllContainer();
+        Game.start( socket );
+        containerCountdown.style.display = "block";
+    } );
+
+    socket.on( EVENT_COUNTDOWN, ( data: any ) => {
+        data = JSON.parse( data );
+        containerCountdown.innerHTML = data[ "count" ];
+    } );
+
+    socket.on( EVENT_START_GAME, ( data: any ) => {
+        data = JSON.parse( data );
+        containerCountdown.innerHTML = "START";
+        setTimeout( () => {
+            containerCountdown.style.display = "none";
+        }, 1000 );
+    } );
+
+    socket.on( "TEST", ( data: any ) => {
+        console.log( data );
     });
 }
 

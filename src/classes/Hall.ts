@@ -26,11 +26,6 @@ export default class Hall {
             this.showRooms( list );
         });
 
-        this.socket.on( EVENT_CREATE_ROOM, ( data: any )=> {
-            let room = JSON.parse( data );
-            this.addRoom( room );
-        });
-
         this.btnCreateRoom.addEventListener( "click", (evt)=> {
             this.createRoom();
         });
@@ -59,32 +54,14 @@ export default class Hall {
         this.socket.emit( EVENT_CREATE_ROOM );
     }
 
-    public addRoom( data: any ) {
-        let tr = document.createElement( "tr" );
-        let str = `
-            <td>${data["room"]}</td>
-            <td>
-                <button type="button" class="btn btn-default" data-room="${data["room"]}">加入</button>
-            </td>
-        `;
-        tr.innerHTML = str;
-        this.containerRoomList.appendChild( tr );
-        tr.querySelector( "button" ).addEventListener( "click", ( evt ) => {
-            this.enterRoom( data["room"] );
-        });
-    }
-
     public showRooms( rooms: any ) {
         let str = "";
-        for ( let key in rooms ) {
-            if ( !/^room_\d+$/gi.test( key.toLocaleLowerCase() ) ) {
-                continue;
-            }
+        for ( let i = 0, len = rooms.length; i < len; i++ ) {
             str += `
                 <tr>
-                    <td>${key}</td>
+                    <td>${rooms[ i ]}</td>
                     <td>
-                        <button type="button" class="btn btn-default" data-room="${key}" >加入</button>
+                        <button type="button" class="btn btn-default" data-room="${rooms[ i ]}" >加入</button>
                     </td>
                 </tr>
             `;

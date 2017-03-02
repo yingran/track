@@ -69,6 +69,7 @@ function keydown( e: KeyboardEvent ) {
 
 function startGame(): void {
     let container = document.getElementById( "game" );
+    container.style.display = "block";
     world = new World( window.innerWidth, window.innerHeight );
     container.appendChild( world.domElement );
     map = new Map( world, Resource.maps[ "test" ] );
@@ -89,7 +90,7 @@ export default class Game {
 
     }
     
-    public static start(): void {
+    public static start( socket: SocketIOClient.Socket ): void {
         Resource.load().then( () => {
             startGame();
         });
