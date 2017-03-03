@@ -16,7 +16,7 @@ export default class Tree extends RigidBody {
         let mass = 0;
         let friction = 1;
         let geometry: Ammo.btCylinderShape = new Ammo.btCylinderShape( new Ammo.btVector3( radius, height, 0 ) );
-        let mesh: THREE.Mesh = Resource.meshes[ "tree" ];
+        let mesh: THREE.Mesh = Resource.meshes[ "tree" ].clone();
         mesh.position.set( pos.x, pos.y, pos.z );
         super( world, mesh, geometry, pos, quat, mass, friction );
         this.mesh = mesh;

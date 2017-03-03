@@ -121,7 +121,7 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
         let depth: number = 4;
         let friction: number = 1;
         let mass: number = 800;
-        let mesh: THREE.Mesh = Resource.meshes[ "vehicleBody" ];
+        let mesh: THREE.Mesh = Resource.meshes[ "vehicleBody" ].clone();
         let geometry: Ammo.btBoxShape = new Ammo.btBoxShape( new Ammo.btVector3( width * 0.5, height * 0.5, depth * 0.5 ) );
         let classisBody: RigidBody;
         classisBody = new RigidBody( world, mesh, geometry, pos, quat, mass, friction );

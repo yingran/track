@@ -8,15 +8,14 @@ import {
     EVENT_JOIN_ROOM,
     EVENT_LEAVE_ROOM,
     EVENT_PLAYER_LIST,
-    EVENT_ENTER_GAME,
-    EVENT_START_GAME,
-    EVENT_COUNTDOWN
+    EVENT_ENTER_GAME
 } from "./classes/Const";
 
 let socket = io( "http://localhost:8081" );
 let hall: Hall;
 let player: Player;
 let room: Room;
+let game: Game;
 
 let containerPlayer: any = document.getElementById( "player" );
 let containerWelcome: any = document.getElementById( "welcome" );
@@ -26,6 +25,7 @@ function connect() {
     hall = new Hall( socket );
     player = new Player( socket );
     room = new Room( socket );
+    game = new Game( socket, player.id );
     enterHall();
 
     socket.on( EVENT_JOIN_ROOM, ( data: any )=> {
@@ -41,22 +41,10 @@ function connect() {
     });
 
     socket.on( EVENT_ENTER_GAME, ( data: any ) => {
+        data = JSON.parse( data );
         hideAllContainer();
-        Game.start( socket );
+        game.prepare( data );
         containerCountdown.style.display = "block";
-    } );
-
-    socket.on( EVENT_COUNTDOWN, ( data: any ) => {
-        data = JSON.parse( data );
-        containerCountdown.innerHTML = data[ "count" ];
-    } );
-
-    socket.on( EVENT_START_GAME, ( data: any ) => {
-        data = JSON.parse( data );
-        containerCountdown.innerHTML = "START";
-        setTimeout( () => {
-            containerCountdown.style.display = "none";
-        }, 1000 );
     } );
 
     socket.on( "TEST", ( data: any ) => {
