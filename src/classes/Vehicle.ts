@@ -14,6 +14,8 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
     protected readonly tuning: Ammo.btVehicleTuning;
     public classisBody: Box;
     public actions: any;
+    private color: number;
+    private name: string;
     
     // Vehicle contants
     protected engineForce: number;
@@ -49,7 +51,7 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
     protected wheelAxleCS: Ammo.btVector3;
     protected wheelMeshes: Array< THREE.Mesh >;
 
-    constructor( world: World, pos: THREE.Vector3, quat: THREE.Quaternion ) {
+    constructor( world: World, pos: THREE.Vector3, quat: THREE.Quaternion, color: number, name: string ) {
         let tuning = new Ammo.btVehicleTuning();
         let rayCaster = new Ammo.btDefaultVehicleRaycaster( world.physicsWorld );
         let classisBody = Vehicle._createClassisBody( world, pos, quat );
@@ -60,6 +62,8 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
         this.world = world;
         this.tuning = tuning;
         this.classisBody = classisBody;
+        this.color = color;
+        this.name = name;
         world.physicsWorld.addAction( this );
 
         this._initConstants();
@@ -154,7 +158,7 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
         wheelInfo.m_wheelsDampingCompression = this.suspensionCompression;
         wheelInfo.m_frictionSlip = this.friction;
         wheelInfo.m_rollInfluence = this.rollInfluence;
-        this.wheelMeshes[index] = Vehicle._createWheelMesh( this.world, radius, width, new THREE.MeshPhongMaterial( { color: DEFAULT_COLOR } ) );
+        this.wheelMeshes[index] = Vehicle._createWheelMesh( this.world, radius, width, new THREE.MeshPhongMaterial( { color: this.color } ) );
         return wheelInfo;
     }
 

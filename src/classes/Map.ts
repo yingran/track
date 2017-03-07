@@ -101,6 +101,14 @@ export default class Map {
                     new Tree( this.world, pos, quat );
                 });
                 break;
+                case "box":
+                bodies[ key ].forEach( ( data: any ) => {
+                    let pos = new THREE.Vector3( data["position"][0], data["position"][1], data["position"][2] );
+                    let quat = new THREE.Quaternion( 0, 0, 0, 1 );
+                    quat.setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), data["rotation"]*Math.PI/180 );
+                    new Box( this.world, pos, quat, 1, 1, 1, 100, 1, new THREE.MeshPhongMaterial( 0x990099 ) );
+                });
+                break;
                 default:
             }
         }

@@ -23,6 +23,13 @@ let keysActions: any = {
     "KeyA": "left",
     "KeyD": "right"
 };
+let colors: Array<number> = [
+    0x990000,
+    0x999900,
+    0x009900,
+    0x009999,
+    0x000099
+];
 
 
 let container = document.getElementById( "game" );
@@ -65,15 +72,33 @@ export default class Game {
         this._map.startLine.getWorldPosition();
         quat = new THREE.Quaternion( 0, 0, 0, 1 );
         quat.setFromEuler( this._map.startLine.rotation );
+        //let a = [];
         for ( let i = 0, len = players.length; i < len; i++ ) {
             let x = Math.pow( -1, i ) * Math.ceil( i / 2 ) * 4;
-            let vehicle = new Vehicle( world, this._map.startLine.localToWorld( new THREE.Vector3( x, 1, -5 ) ), quat );
+            let vehicle = new Vehicle( world, this._map.startLine.localToWorld( new THREE.Vector3( x, 1, -5 ) ), quat, colors[ i ], players[ i ][ "name" ] );
             this._vehicles[ players[ i ][ "id" ] ] = vehicle;
+            //vehicle.classisBody.setCollisionFlags( vehicle.classisBody.getCollisionFlags() | 8 );
             if ( players[ i ][ "id" ] === this._playerId ) {
                 this._vehicle = vehicle;
             }
+            //a[ i ] = vehicle;
         }
+
+
+        /** 
+        let callback = new Ammo.ConcreteContactResultCallback();
+        callback.addSingleResult = function( cp: Ammo.btManifoldPoint, colObj0Wrap: Ammo.btCollisionObjectWrapper, partId0: number, index0: number, colObj1Wrap: Ammo.btCollisionObjectWrapper, partId1: number, index1: number ) {
+            console.log( "--------" );
+            return 0;
+        }
+
+        world.physicsWorld.contactPairTest( a[0].classisBody, a[1].classisBody, callback );
+        world.physicsWorld.contactTest( a[0].classisBody, callback );
+        */
+
         vehicle = this._vehicle;
+
+        //throw "error";
     }
 
     private _handleKeyUp( evt: any ) {
@@ -161,7 +186,6 @@ export default class Game {
 
     private _translateVehicle( data: any ) {
         data = JSON.parse( data );
-        console.log( data );
         this._vehicles[ data[ "player" ] ].actions[ data[ "action" ] ] = !!data[ "value" ];
     }
     

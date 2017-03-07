@@ -53,6 +53,16 @@
                 "position": [ 10, 0, -60 ],
                 "rotation": 30
             }
+        ],
+
+        "box": [
+            {
+                "position": [ -92, 0, -60 ],
+                "rotation": 30
+            } , {
+                "position": [ -92, 1, -60 ],
+                "rotation": 30
+            }
         ]
     }
 }
