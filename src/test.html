@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>TEST</title>
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <style type="text/css">
+            body {
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container" id="container"></div>
+
+        <script src="./three.js"></script>
+        <script src="./OrbitControls.js"></script>
+        <script src="./ammo.js"></script>
+        <script>
+
+            let syncList = [];
+            let clock = new THREE.Clock();
+            let time = 0;
+            let scene = createScene();
+            let camera = createCamera( window.innerWidth, window.innerHeight );
+            let renderer = createRenderer( window.innerWidth, window.innerHeight );
+            let controls = new THREE.OrbitControls( camera );
+            let dynamicsWorld = createPhysicsWorld();
+            let box1 = createBody( 1, 1, 1, new THREE.Vector3( 0, 10, 0 ), 1, 0x330000 );
+            let box2 = createBody( 1, 1, 1, new THREE.Vector3( 0, 20, 0 ), 1, 0x660000 );
+            let floor = createBody( 10, 0.1, 10, new THREE.Vector3( 0, 0, 0 ), 0, 0x003333 );
+
+            function createScene() {
+                let ambientLight = new THREE.AmbientLight( 0x404040 );
+                let dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+                let scene = new THREE.Scene();
+                dirLight.position.set( 10, 10, 5 );
+                scene.add( dirLight );
+                scene.add( ambientLight );
+                return scene;
+            }
+
+            function createCamera( width, height ) {
+                let camera = new THREE.PerspectiveCamera( 60, width / height, 0.2, 2000);
+                camera.position.x = 0;
+                camera.position.y = 2.5;
+                camera.position.z = -5;
+                return camera;
+            }
+
+            function createRenderer( width, height ) {    
+                let renderer = new THREE.WebGLRenderer();
+                renderer.setClearColor( 0xbfd1e5 );
+                renderer.setPixelRatio( window.devicePixelRatio );
+                renderer.setSize( width, height );
+                renderer.setSize( width, height );
+                return renderer;
+            }
+
+            function createPhysicsWorld() {
+                let collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
+                let dispatcher = new Ammo.btCollisionDispatcher( collisionConfiguration );
+                let broadphase = new Ammo.btDbvtBroadphase();
+                let solver = new Ammo.btSequentialImpulseConstraintSolver();
+                let physicsWorld = new Ammo.btDiscreteDynamicsWorld( dispatcher, broadphase, solver, collisionConfiguration );
+                physicsWorld.setGravity( new Ammo.btVector3( 0, -9.82, 0 ) );
+                return physicsWorld;
+
+            }
+
+            function createBody( width, height, depth, pos, mass, color ) {   
+                const TRANSFORM_AUX = new Ammo.btTransform();
+                let quat;
+                let friction;
+                let transform;
+                let motionState;
+                let localInertia;
+                let rbInfo;
+                let sync;
+                let geometry;
+                let shape;
+                let mesh;
+                let material;
+                let body;
+
+                friction = 1;
+                quat = new THREE.Quaternion( 0, 0, 0, 1 );
+                material = new THREE.MeshPhongMaterial( { color: color } ) 
+                shape = new THREE.BoxGeometry( width, height, depth);
+                mesh = new THREE.Mesh( shape, material );
+                mesh.position.copy( pos );
+                mesh.quaternion.copy( quat );
+                geometry = new Ammo.btBoxShape( new Ammo.btVector3( width * 0.5, height * 0.5, depth * 0.5 ) );
+                transform = new Ammo.btTransform();
+                transform.setIdentity();
+                transform.setOrigin( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
+                transform.setRotation( new Ammo.btQuaternion( quat.x, quat.y, quat.z, quat.w ) );
+                motionState = new Ammo.btDefaultMotionState( transform );
+                localInertia = new Ammo.btVector3(0, 0, 0);
+                geometry.calculateLocalInertia( mass, localInertia );
+                rbInfo = new Ammo.btRigidBodyConstructionInfo( mass, motionState, geometry, localInertia );
+
+                body = new Ammo.btRigidBody( rbInfo );
+                body.setFriction( friction );
+
+                if (mass > 0) {
+                    body.setActivationState( 4 );
+                    syncList.push( function() {
+                        
+                        let ms = body.getMotionState();
+                        if ( ms ) {
+                            ms.getWorldTransform( TRANSFORM_AUX );
+                            let p = TRANSFORM_AUX.getOrigin();
+                            let q = TRANSFORM_AUX.getRotation();
+                            if ( mesh ) {
+                                mesh.position.set( p.x(), p.y(), p.z() );
+                                mesh.quaternion.set( q.x(), q.y(), q.z(), q.w() );
+                            }
+                        }
+                    } );
+                }
+
+                dynamicsWorld.addRigidBody( body );
+                scene.add( mesh );
+
+                return body;
+            }
+
+            function animate() {
+                requestAnimationFrame( animate );
+                let dt = clock.getDelta();
+                for ( let i = 0; i < syncList.length; i++ ) {
+                    syncList[i]( dt );
+                }
+                dynamicsWorld.stepSimulation( dt, 10 );
+                controls.update();
+                renderer.render( scene, camera );
+                time += dt;
+                contactTest();
+            }
+
+            function contactTest() {
+                let resultCallback = new Ammo.ConcreteContactResultCallback();
+                resultCallback.addSingleResult = function(
+                    manifoldPoint,
+                    collisionObjectA,
+                    id0,
+                    index0,
+                    collisionObjectB,
+                    id1,
+                    index1
+                ) {
+                    let manifold = Ammo.wrapPointer(manifoldPoint.ptr,Ammo.btManifoldPoint);
+                    let localPointA = manifold.get_m_localPointA();
+                    let localPointB = manifold.get_m_localPointB();
+                    console.log( "---------------------------------" ); 
+                }
+                dynamicsWorld.contactTest(
+                    box1,
+                    resultCallback
+                );
+                dynamicsWorld.contactPairTest(
+                    box1,
+                    box2,
+                    resultCallback
+                );
+            }
+
+            function main() {
+                let container = document.getElementById( "container" );
+                container.appendChild( renderer.domElement );
+                contactTest();
+                animate();
+            }
+
+            main();
+        </script>
+    </body>
+</html>

@@ -11,7 +11,8 @@ import Vehicle from "./Vehicle";
 import {
     EVENT_PLAYER_ACTION,
     EVENT_COUNTDOWN,
-    EVENT_START_GAME
+    EVENT_START_GAME,
+    EVENT_FINISH_GAME
 } from "./Const";
 
 let clientSocket: SocketIOClient.Socket;
@@ -39,6 +40,8 @@ export default class Game {
     static IDLE: Symbol = Symbol();
     static COUNTDOWN: Symbol = Symbol();
     static PLAYING: Symbol = Symbol();
+    static FINISH: Symbol = Symbol();
+    static OVER: Symbol = Symbol();
 
     readonly socket: SocketIOClient.Socket;
     private _playerId: string;
@@ -49,6 +52,7 @@ export default class Game {
 
     public container: HTMLElement;
     public containerCountdown: HTMLElement;
+    public containerRankList: HTMLElement;
 
     public state: Symbol;
 
@@ -61,6 +65,7 @@ export default class Game {
 
         this.container = document.getElementById( "game" );
         this.containerCountdown = document.getElementById( "countdown" );
+        this.containerRankList = document.getElementById( "rank-list" );
 
         this._attachEvent();
         this._attachDataListener();
@@ -72,33 +77,36 @@ export default class Game {
         this._map.startLine.getWorldPosition();
         quat = new THREE.Quaternion( 0, 0, 0, 1 );
         quat.setFromEuler( this._map.startLine.rotation );
-        //let a = [];
         for ( let i = 0, len = players.length; i < len; i++ ) {
             let x = Math.pow( -1, i ) * Math.ceil( i / 2 ) * 4;
             let vehicle = new Vehicle( world, this._map.startLine.localToWorld( new THREE.Vector3( x, 1, -5 ) ), quat, colors[ i ], players[ i ][ "name" ] );
             this._vehicles[ players[ i ][ "id" ] ] = vehicle;
-            //vehicle.classisBody.setCollisionFlags( vehicle.classisBody.getCollisionFlags() | 8 );
             if ( players[ i ][ "id" ] === this._playerId ) {
                 this._vehicle = vehicle;
             }
-            //a[ i ] = vehicle;
         }
-
-
-        /** 
-        let callback = new Ammo.ConcreteContactResultCallback();
-        callback.addSingleResult = function( cp: Ammo.btManifoldPoint, colObj0Wrap: Ammo.btCollisionObjectWrapper, partId0: number, index0: number, colObj1Wrap: Ammo.btCollisionObjectWrapper, partId1: number, index1: number ) {
-            console.log( "--------" );
-            return 0;
-        }
-
-        world.physicsWorld.contactPairTest( a[0].classisBody, a[1].classisBody, callback );
-        world.physicsWorld.contactTest( a[0].classisBody, callback );
-        */
 
         vehicle = this._vehicle;
+    }
 
-        //throw "error";
+    private _destinationTest( dt: any ): void {
+        let callback = new Ammo.ConcreteContactResultCallback();
+        let game = this;
+        callback.addSingleResult = function() {
+            if ( game.state === Game.PLAYING ) {
+                game._finish();
+            }
+        }
+        world.physicsWorld.contactPairTest( this._vehicle.classisBody, this._map.finishLine, callback );
+    }
+
+    private _finish() { 
+        this.state = Game.FINISH;
+        this.socket.emit( EVENT_FINISH_GAME, JSON.stringify( {
+            "id": this._playerId
+        } ));
+        this.containerRankList.style.display = "block";
+        this._vehicle.break();
     }
 
     private _handleKeyUp( evt: any ) {
@@ -157,6 +165,10 @@ export default class Game {
         this.socket.on( EVENT_PLAYER_ACTION, ( data: any ) => {
             this._translateVehicle( data );
         } );
+
+        this.socket.on( EVENT_FINISH_GAME, ( data: any ) => {
+            this._updateRankList( data );
+        } );
     }
 
     private _countdown( data: any ) {
@@ -172,6 +184,7 @@ export default class Game {
         this._map = new Map( world, Resource.maps[ "test" ] );
 
         this._addVehicles();
+        world.syncList.push( this._destinationTest.bind( this ) );
         animate();
     }
 
@@ -187,6 +200,17 @@ export default class Game {
     private _translateVehicle( data: any ) {
         data = JSON.parse( data );
         this._vehicles[ data[ "player" ] ].actions[ data[ "action" ] ] = !!data[ "value" ];
+    }
+
+    private _updateRankList( data: any ) {
+        data = JSON.parse( data );
+        let element = document.createElement( "li" );
+        for ( let i = 0, len = this._players.length; i < len; i++ ) {
+            if ( this._players[ i ][ "id" ] === data[ "id" ] ) {
+                element.innerHTML =  this._players[ i ][ "name" ];
+            }
+        }
+        this.containerRankList.querySelector( "ol" ).appendChild( element );
     }
     
     public prepare( players: Array<any> ): void {

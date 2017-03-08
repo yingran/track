@@ -2,7 +2,6 @@ body {
     margin: 0;
     overflow: hidden;
 }
-
 .container {
     display: none;
 
@@ -16,16 +15,32 @@ body {
     }
 }
 
-#countdown {
+.layer () {
     display: none;
     position: fixed;
     width: 400px;
     height: 200px;
-    color: #fff;
-    font-size: 128px;
     text-align: center;
     left: 50%;
     top: 200px;
     margin-left: -200px;
     z-index: 9;
+    color: #fff;
+    text-shadow: 5px 5px 5px #0000ff;
+}
+
+#countdown {
+    .layer();
+    font-size: 128px;
+}
+
+#rank-list {
+    .layer();
+    top: 100px;
+    height: auto;
+    text-align: left;
+    ol {
+        margin: 10px;
+        font-size: 24px;
+    }
 }

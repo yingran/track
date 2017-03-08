@@ -15,6 +15,7 @@ export default class Map {
     private world: World;
 
     public startLine: THREE.Mesh;
+    public finishLine: Box;
 
     constructor( world: World, mapData: any ) {
         this.world = world;
@@ -23,6 +24,7 @@ export default class Map {
         new Ground( world, this.width, this.width );
         this._addInvisibleBarriers();
         this._addStartingLine( mapData[ "start" ][ "position" ], mapData[ "start" ][ "rotation" ] );
+        this._addFinishLine( mapData[ "finish" ][ "position" ], mapData[ "finish" ][ "rotation" ] );
         this._addBodies( mapData["bodies"] );
     }
 
@@ -77,6 +79,15 @@ export default class Map {
         mesh.quaternion.copy( quat );
         this.world.scene.add( mesh );
         this.startLine = mesh;
+    }
+
+    /**
+     * add finish line
+     */
+    private _addFinishLine( position: Array<number>, rotation: number ): void {
+        let pos: THREE.Vector3 = new THREE.Vector3( position[0], position[1], position[2] );
+        let quat: THREE.Quaternion = new THREE.Quaternion( 0, 0, 0, 1 ).setFromAxisAngle( new THREE.Vector3( 0, 1, 0 ), rotation*Math.PI/180 );
+        this.finishLine = new Box( this.world, pos, quat, 20, 0.01, 0.5, 0, 1, new THREE.MeshPhongMaterial( 0xffffff ) );
     }
 
     /**

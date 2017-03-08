@@ -79,6 +79,17 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
         world.syncList.push( this._sync.bind(this) );
     }
 
+    public break() {
+        this.actions.left = false;
+        this.actions.right = false;
+        this.actions.acceleration = false;
+        this.actions.breaking = false;
+        this.setBrake( this.maxBreakingForce, this.FRONT_LEFT );
+        this.setBrake( this.maxBreakingForce, this.FRONT_RIGHT );
+        this.setBrake( this.maxBreakingForce, this.BACK_LEFT );
+        this.setBrake( this.maxBreakingForce, this.BACK_RIGHT );
+    }
+
     private _initConstants(): void {
         this.engineForce = 0;
         this.vehicleSteering = 0;
@@ -204,7 +215,7 @@ export default class Vehicle extends Ammo.btRaycastVehicle {
         }
         this.applyEngineForce( this.engineForce, this.BACK_LEFT );
         this.applyEngineForce( this.engineForce, this.BACK_RIGHT );
-        this.setBrake( this.breakingForce / 2,this. FRONT_LEFT );
+        this.setBrake( this.breakingForce / 2, this.FRONT_LEFT );
         this.setBrake( this.breakingForce / 2, this.FRONT_RIGHT );
         this.setBrake( this.breakingForce, this.BACK_LEFT );
         this.setBrake( this.breakingForce, this.BACK_RIGHT );

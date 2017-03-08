@@ -6,6 +6,7 @@
         "module": "commonjs",
         "target": "es2015",
         "experimentalDecorators": true,
+        "skipLibCheck": true,
         "lib": ["dom", "scripthost", "es2015"]
     },
     "include": [
