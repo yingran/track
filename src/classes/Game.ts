@@ -32,16 +32,15 @@ let colors: Array<number> = [
     0x000099
 ];
 
+let animateFrame: any;
 
-let container = document.getElementById( "game" );
 
 export default class Game {
 
-    static IDLE: Symbol = Symbol();
-    static COUNTDOWN: Symbol = Symbol();
-    static PLAYING: Symbol = Symbol();
-    static FINISH: Symbol = Symbol();
-    static OVER: Symbol = Symbol();
+    static STATE_IDLE: number = 1;
+    static STATE_COUNTDOWN: number = 2;
+    static STATE_PLAYING: number = 3;
+    static STATE_FINISH: number = 4;
 
     readonly socket: SocketIOClient.Socket;
     private _playerId: string;
@@ -54,14 +53,14 @@ export default class Game {
     public containerCountdown: HTMLElement;
     public containerRankList: HTMLElement;
 
-    public state: Symbol;
+    public state: number;
 
     constructor( socket: SocketIOClient.Socket, playerId: string ) {
         this.socket = clientSocket = socket;
         this._playerId = playerId;
         this._players = [];
         this._vehicles = {};
-        this.state = Game.IDLE;
+        this.state = Game.STATE_IDLE;
 
         this.container = document.getElementById( "game" );
         this.containerCountdown = document.getElementById( "countdown" );
@@ -93,7 +92,7 @@ export default class Game {
         let callback = new Ammo.ConcreteContactResultCallback();
         let game = this;
         callback.addSingleResult = function() {
-            if ( game.state === Game.PLAYING ) {
+            if ( game.state === Game.STATE_PLAYING ) {
                 game._finish();
             }
         }
@@ -101,17 +100,16 @@ export default class Game {
     }
 
     private _finish() { 
-        this.state = Game.FINISH;
+        this.state = Game.STATE_FINISH;
         this.socket.emit( EVENT_FINISH_GAME, JSON.stringify( {
-            "id": this._playerId
+            "player": this._playerId
         } ));
         this.containerRankList.style.display = "block";
         this._vehicle.break();
     }
 
     private _handleKeyUp( evt: any ) {
-        if ( this.state === Game.PLAYING && keysActions[evt.code] ) {
-            vehicle.actions[keysActions[evt.code]] = false;
+        if ( this.state === Game.STATE_PLAYING && keysActions[evt.code] ) {
             evt.preventDefault();
             evt.stopPropagation();
             this.socket.emit( EVENT_PLAYER_ACTION, JSON.stringify( {
@@ -123,8 +121,7 @@ export default class Game {
     }
 
     private _handleKeyDown( evt: any ) {
-        if ( this.state === Game.PLAYING && keysActions[evt.code] ) {
-            vehicle.actions[ keysActions[evt.code] ] = true;
+        if ( this.state === Game.STATE_PLAYING && keysActions[evt.code] ) {
             evt.preventDefault();
             evt.stopPropagation();
             this.socket.emit( EVENT_PLAYER_ACTION, JSON.stringify( {
@@ -136,7 +133,7 @@ export default class Game {
     }
 
     private _handleWindowResize( evt: any ) {
-        if ( this.state !== Game.IDLE && world ) {
+        if ( this.state !== Game.STATE_IDLE && world ) {
             world.resize( window.innerWidth, window.innerHeight );
         }
     }
@@ -177,10 +174,10 @@ export default class Game {
     }
 
     private _prepareGame() {
-        this.state = Game.COUNTDOWN;
-        container.style.display = "block";
+        this.state = Game.STATE_COUNTDOWN;
+        this.container.style.display = "block";
         world = new World( window.innerWidth, window.innerHeight );
-        container.appendChild( world.domElement );
+        this.container.appendChild( world.domElement );
         this._map = new Map( world, Resource.maps[ "test" ] );
 
         this._addVehicles();
@@ -190,10 +187,11 @@ export default class Game {
 
     private _startGame( data: any ) {
         data = JSON.parse( data );
-        this.state = Game.PLAYING;
+        this.state = Game.STATE_PLAYING;
         this.containerCountdown.innerHTML = "START";
         setTimeout( () => {
             this.containerCountdown.style.display = "none";
+            this.containerCountdown.innerHTML = "";
         }, 1000 );
     }
 
@@ -206,7 +204,7 @@ export default class Game {
         data = JSON.parse( data );
         let element = document.createElement( "li" );
         for ( let i = 0, len = this._players.length; i < len; i++ ) {
-            if ( this._players[ i ][ "id" ] === data[ "id" ] ) {
+            if ( this._players[ i ][ "id" ] === data[ "player" ] ) {
                 element.innerHTML =  this._players[ i ][ "name" ];
             }
         }
@@ -219,11 +217,22 @@ export default class Game {
             this._prepareGame();
         });
     }
+
+    public over() {
+        this.state = Game.STATE_IDLE;
+        this.containerRankList.style.display = "none";
+        this.containerRankList.querySelector( "ol" ).innerHTML = "";
+        this.container.innerHTML = "";
+        this._vehicle = null;
+        this._vehicles.lenght = 0;
+        world = null;
+        cancelAnimationFrame( animateFrame );
+    }
     
 }
 
 function animate(): void {
-    requestAnimationFrame( animate );
+    animateFrame = requestAnimationFrame( animate );
     let dt = world.clock.getDelta();
     for ( let i = 0; i < world.syncList.length; i++ ) {
         world.syncList[i]( dt );

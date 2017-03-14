@@ -9,10 +9,13 @@
     "start-dev": "./node_modules/.bin/webpack-dev-server --inline --hot --content-base ./build/",
     "build": "npm run clean && npm run copy && npm run webpack",
     "clean": "./node_modules/.bin/del-cli ./build/*",
-    "copy": "npm run copy-files && npm run copy-resources",
-    "copy-files": "cp ./src/index.html ./node_modules/three/build/three.js ./node_modules/three/examples/js/controls/OrbitControls.js ./node_modules/three/examples/js/loaders/MTLLoader.js ./node_modules/three/examples/js/loaders/OBJLoader.js ./node_modules/ammo.js/builds/ammo.js ./node_modules/socket.io-client/dist/socket.io.min.js ./build/",
-    "copy-resources": "cp ./src/resources/**/* ./build/resources/",
+    "copy": "npm run mkdir && npm run copy-files && npm run copy-maps && npm run copy-meshes",
+    "mkdir": "./node_modules/.bin/mkdirp ./build/resources ./build/resources/meshes ./build/resources/maps",
+    "copy-files": "cp ./src/index.html ./build/",
+    "copy-maps": "cp ./src/resources/maps/* ./build/resources/maps/",
+    "copy-meshes": "cp ./src/resources/meshes/* ./build/resources/meshes/",
     "webpack": "./node_modules/.bin/webpack",
+    "uglify": "./node_modules/.bin/uglifyjs ./build/app.js -o ./build/app.js",
     "doc": "npm run rmdoc && npm run typedoc",
     "typedoc": "./node_modules/.bin/typedoc --options typedoc.json",
     "rmdoc": "./node_modules/.bin/del-cli ./docs"
@@ -46,9 +49,11 @@
     "file-loader": "^0.9.0",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
+    "mkdirp": "^0.5.1",
     "ts-loader": "^1.3.3",
     "typedoc": "^0.5.5",
     "typescript": "^2.1.4",
+    "uglify-js": "github:mishoo/UglifyJS2#harmony",
     "webpack": "^1.14.0",
     "webpack-dev-server": "^1.16.2"
   }

@@ -8,10 +8,11 @@ import {
     EVENT_JOIN_ROOM,
     EVENT_LEAVE_ROOM,
     EVENT_PLAYER_LIST,
-    EVENT_ENTER_GAME
+    EVENT_ENTER_GAME,
+    EVENT_GAME_OVER
 } from "./classes/Const";
 
-let socket = io( "http://localhost:8081" );
+let socket = io( "http://123.57.13.28:8002" );
 let hall: Hall;
 let player: Player;
 let room: Room;
@@ -45,6 +46,12 @@ function connect() {
         hideAllContainer();
         game.prepare( data );
         containerCountdown.style.display = "block";
+    } );
+
+    socket.on( EVENT_GAME_OVER, ( data: any ) => {
+        game.over();
+        hideAllContainer();
+        room.show();
     } );
 
     socket.on( "TEST", ( data: any ) => {
